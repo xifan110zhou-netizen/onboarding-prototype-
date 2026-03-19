@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>离职确认即时退出钉钉通讯录 - 交互原型</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f0f1f5;color:#1d2129;font-size:14px}
+.layout{display:flex;height:100vh}
+
+/* 侧边栏 */
+.sidebar{width:200px;background:#16161a;color:#fff;flex-shrink:0;overflow-y:auto}
+.sidebar h2{padding:20px 16px 6px;font-size:15px;font-weight:600}
+.sidebar .sub{padding:0 16px 16px;font-size:11px;color:rgba(255,255,255,.4)}
+.nav-group{margin-top:8px}
+.nav-label{padding:8px 16px;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px}
+.nav-item{padding:9px 16px 9px 24px;cursor:pointer;color:rgba(255,255,255,.65);font-size:13px;transition:background .15s}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{background:rgba(51,112,255,.2);color:#3370ff;border-right:3px solid #3370ff}
+
+/* 主区域 */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:52px;background:#fff;border-bottom:1px solid #e5e6eb;display:flex;align-items:center;padding:0 24px;justify-content:space-between}
+.breadcrumb{display:flex;align-items:center;gap:6px;color:#86909c;font-size:13px}
+.breadcrumb .sep{color:#c9cdd4}
+.breadcrumb .cur{color:#1d2129;font-weight:500}
+.avatar{width:32px;height:32px;border-radius:50%;background:#3370ff;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500}
+.content{flex:1;overflow-y:auto;padding:24px}
+
+/* 页面标签 */
+.page-tabs{display:flex;gap:0;margin-bottom:20px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.page-tab{padding:12px 24px;cursor:pointer;font-size:14px;color:#86909c;border-bottom:2px solid transparent;transition:all .15s;font-weight:500}
+.page-tab:hover{color:#3370ff}
+.page-tab.active{color:#3370ff;border-bottom-color:#3370ff;background:rgba(51,112,255,.04)}
+
+/* 卡片 */
+.card{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:24px;margin-bottom:16px}
+.card-title{font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-desc{color:#86909c;font-size:13px;margin-bottom:20px;line-height:1.6}
+
+/* 开关 */
+.switch-row{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#f7f8fa;border-radius:8px;border:1px solid #e5e6eb}
+.switch-info h4{font-size:14px;font-weight:500;margin-bottom:4px}
+.switch-info p{font-size:12px;color:#86909c;line-height:1.5;max-width:600px}
+.switch{width:44px;height:24px;border-radius:12px;background:#c9cdd4;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.switch.on{background:#3370ff}
+.switch::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.switch.on::after{transform:translateX(20px)}
+
+/* 状态标签 */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500}
+.tag-on{background:#e8f3ff;color:#3370ff}
+.tag-off{background:#f2f3f5;color:#86909c}
+.tag-success{background:#e8ffea;color:#00b42a}
+.tag-error{background:#ffece8;color:#f53f3f}
+.tag-warn{background:#fff7e8;color:#ff7d00}
+
+/* 表格 */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{background:#f7f8fa;padding:10px 12px;text-align:left;font-weight:500;font-size:13px;color:#86909c;border-bottom:1px solid #e5e6eb;white-space:nowrap}
+td{padding:12px;border-bottom:1px solid #f2f3f5;font-size:13px;vertical-align:middle}
+tr:hover td{background:#fafbfc}
+
+/* 按钮 */
+.btn{padding:7px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;display:inline-flex;align-items:center;gap:4px}
+.btn-primary{background:#3370ff;color:#fff}
+.btn-primary:hover{background:#2860e0}
+.btn-outline{background:#fff;color:#3370ff;border:1px solid #3370ff}
+.btn-outline:hover{background:#e8f3ff}
+.btn-danger{background:#fff;color:#f53f3f;border:1px solid #f53f3f}
+.btn-danger:hover{background:#ffece8}
+.btn-text{background:none;color:#3370ff;border:none;padding:4px 8px}
+.btn-text:hover{background:#e8f3ff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* 弹窗 */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-mask.show{opacity:1;pointer-events:auto}
+.modal{background:#fff;border-radius:12px;width:480px;max-height:80vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.15);transform:translateY(20px);transition:transform .2s}
+.modal-mask.show .modal{transform:translateY(0)}
+.modal-header{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between}
+.modal-header h3{font-size:16px;font-weight:600}
+.modal-close{width:28px;height:28px;border-radius:6px;border:none;background:none;cursor:pointer;font-size:18px;color:#86909c;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:#f2f3f5}
+.modal-body{padding:16px 24px}
+.modal-footer{padding:12px 24px 20px;display:flex;justify-content:flex-end;gap:8px}
+
+/* 表单 */
+.form-item{margin-bottom:16px}
+.form-label{font-size:13px;font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.form-label .req{color:#f53f3f}
+.form-input{width:100%;padding:8px 12px;border:1px solid #e5e6eb;border-radius:6px;font-size:13px;outline:none;transition:border-color .15s}
+.form-input:focus{border-color:#3370ff}
+.form-select{width:100%;padding:8px 12px;border:1px solid #e5e6eb;border-radius:6px;font-size:13px;outline:none;background:#fff;cursor:pointer}
+
+/* Toast */
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-60px);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:2000;transition:transform .3s;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast-success{background:#e8ffea;color:#00b42a;border:1px solid #aff0b5}
+.toast-error{background:#ffece8;color:#f53f3f;border:1px solid #fdcdc5}
+.toast-info{background:#e8f3ff;color:#3370ff;border:1px solid #bedaff}
+
+/* 操作日志 */
+.log-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.log-time{color:#86909c;white-space:nowrap;flex-shrink:0}
+.log-content{flex:1}
+.log-user{color:#3370ff;font-weight:500}
+
+/* 空状态 */
+.empty{text-align:center;padding:40px;color:#c9cdd4}
+.empty svg{width:48px;height:48px;margin-bottom:12px}
+
+/* 搜索 */
+.search-bar{display:flex;gap:12px;margin-bottom:16px;align-items:center}
+.search-input{padding:7px 12px;border:1px solid #e5e6eb;border-radius:6px;font-size:13px;outline:none;width:240px}
+.search-input:focus{border-color:#3370ff}
+
+/* 进度条 */
+.progress-bar{height:4px;background:#f2f3f5;border-radius:2px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;background:#3370ff;border-radius:2px;transition:width .8s ease}
+
+/* 动画 */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease}
+</style>
+</head>
+<body>
+<!-- Toast -->
+<div class="toast toast-success" id="toast"></div>
+
+<!-- 确认离职弹窗 -->
+<div class="modal-mask" id="confirmModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>确认离职</h3>
+      <button class="modal-close" onclick="closeModal('confirmModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:16px;color:#86909c;line-height:1.6">确认后，该员工的离职流程将正式生效。</p>
+      <div class="form-item">
+        <div class="form-label"><span class="req">*</span> 员工姓名</div>
+        <div class="form-input" style="background:#f7f8fa;border-color:#f2f3f5" id="modalName">-</div>
+      </div>
+      <div class="form-item">
+        <div class="form-label"><span class="req">*</span> 离职类型</div>
+        <div class="form-input" style="background:#f7f8fa;border-color:#f2f3f5" id="modalType">-</div>
+      </div>
+      <div class="form-item">
+        <div class="form-label">离职生效日</div>
+        <div class="form-input" style="background:#f7f8fa;border-color:#f2f3f5" id="modalDate">-</div>
+      </div>
+      <div class="form-item">
+        <div class="form-label">钉钉关联状态</div>
+        <div id="modalDingStatus">-</div>
+      </div>
+      <div id="instantExitHint" style="padding:12px 16px;background:#e8f3ff;border-radius:6px;font-size:12px;color:#3370ff;line-height:1.5;display:none">
+        已开启「确认离职即时退出钉钉通讯录」，确认后将立即执行离职交接并从钉钉通讯录中移除该员工。
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('confirmModal')">取消</button>
+      <button class="btn btn-primary" onclick="doConfirmResign()">确认离职</button>
+    </div>
+  </div>
+</div>
+
+<!-- 开关确认弹窗 -->
+<div class="modal-mask" id="switchModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="switchModalTitle">开启确认</h3>
+      <button class="modal-close" onclick="closeModal('switchModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="switchModalDesc" style="line-height:1.6"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('switchModal')">取消</button>
+      <button class="btn btn-primary" id="switchModalBtn" onclick="doToggleSwitch()">确认</button>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+<!-- 侧边栏 -->
+<aside class="sidebar">
+  <h2>HR SaaS</h2>
+  <div class="sub">人事管理系统</div>
+  <div class="nav-group">
+    <div class="nav-label">人事</div>
+    <div class="nav-item" onclick="switchPage('automation')" id="nav-automation">自动化规则</div>
+    <div class="nav-item" onclick="switchPage('resign')" id="nav-resign">离职管理</div>
+    <div class="nav-item" onclick="switchPage('log')" id="nav-log">同步错误日志</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">其他</div>
+    <div class="nav-item" style="opacity:.4;cursor:default">员工花名册</div>
+    <div class="nav-item" style="opacity:.4;cursor:default">组织架构</div>
+    <div class="nav-item" style="opacity:.4;cursor:default">薪酬管理</div>
+  </div>
+</aside>
+
+<!-- 主内容 -->
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb" id="breadcrumb">
+      <span>人事</span><span class="sep">/</span><span class="cur">自动化规则</span>
+    </div>
+    <div class="avatar">HR</div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+</div>
+
+<script>
+// ========== 数据 ==========
+let instantExitOn = false;
+const logs = [];
+
+const employees = [
+  {id:1,name:'张三',dept:'技术部',type:'主动离职',date:'2026-03-20',dingType:'个人账号',dingStatus:'已关联',status:'待确认'},
+  {id:2,name:'李四',dept:'市场部',type:'被动离职',date:'2026-03-22',dingType:'企业账号',dingStatus:'已关联',status:'待确认'},
+  {id:3,name:'王五',dept:'产品部',type:'主动离职',date:'2026-03-25',dingType:'SSO',dingStatus:'已关联',status:'待确认'},
+  {id:4,name:'赵六',dept:'设计部',type:'主动离职',date:'2026-03-21',dingType:'不关联',dingStatus:'-',status:'待确认'},
+  {id:5,name:'孙七',dept:'运营部',type:'被动离职',date:'2026-03-19',dingType:'个人账号',dingStatus:'关联失败',status:'待确认'},
+  {id:6,name:'周八',dept:'技术���',type:'主动离职',date:'2026-03-18',dingType:'企业账号',dingStatus:'已关联',status:'已确认'},
+];
+
+let currentPage = 'automation';
+let pendingEmployee = null;
+
+// ========== 页面切换 ==========
+function switchPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const nav = document.getElementById('nav-' + page);
+  if (nav) nav.classList.add('active');
+  render();
+}
+
+// ========== 渲染 ==========
+function render() {
+  const bc = document.getElementById('breadcrumb');
+  const ct = document.getElementById('content');
+  if (currentPage === 'automation') {
+    bc.innerHTML = '<span>人事</span><span class="sep">/</span><span class="cur">自动化规则</span>';
+    renderAutomation(ct);
+  } else if (currentPage === 'resign') {
+    bc.innerHTML = '<span>人事</span><span class="sep">/</span><span class="cur">离职管理</span>';
+    renderResign(ct);
+  } else if (currentPage === 'log') {
+    bc.innerHTML = '<span>人事</span><span class="sep">/</span><span class="cur">同步错误日志</span>';
+    renderLog(ct);
+  }
+}
+
+// ========== 自动化规则页面 ==========
+function renderAutomation(ct) {
+  ct.innerHTML = `
+    <div class="fade-in">
+      <div class="card">
+        <div class="card-title">自动化规则</div>
+        <div class="card-desc">管理人事模块的自动化规则，控制系统在特定事件发生时的自动行为。</div>
+        <div class="switch-row">
+          <div class="switch-info">
+            <h4>确认离职即时退出钉钉通讯录</h4>
+            <p>开启后，HR 确认离职时将立即执行离职交接并将员工从钉钉通讯录中移除。关闭时，将在离职生效日由系统自动处理。</p>
+            <div style="margin-top:8px">
+              <span class="tag ${instantExitOn ? 'tag-on' : 'tag-off'}">${instantExitOn ? '已开启' : '已关闭'}</span>
+            </div>
+          </div>
+          <div class="switch ${instantExitOn ? 'on' : ''}" onclick="onSwitchClick()"></div>
+        </div>
+      </div>
+      ${renderOperationLog()}
+    </div>`;
+}
+
+function renderOperationLog() {
+  const switchLogs = logs.filter(l => l.type === 'switch');
+  if (switchLogs.length === 0) return `
+    <div class="card">
+      <div class="card-title">操作日志</div>
+      <div class="empty">暂无操作记录</div>
+    </div>`;
+  return `
+    <div class="card">
+      <div class="card-title">操作日志</div>
+      ${switchLogs.map(l => `
+        <div class="log-item">
+          <span class="log-time">${l.time}</span>
+          <span class="log-content"><span class="log-user">${l.user}</span> ${l.content}</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ========== 开关交互 ==========
+function onSwitchClick() {
+  const willOn = !instantExitOn;
+  document.getElementById('switchModalTitle').textContent = willOn ? '确认开启' : '确认关闭';
+  document.getElementById('switchModalDesc').innerHTML = willOn
+    ? '开启后，HR 确认离职时将<b>立即执行离职交接</b>并将员工从钉钉通讯录中移除。<br><br>确定要开启吗？'
+    : '关闭后，钉钉通讯录退出将恢复为离职生效日由定时任务自动处理。<br><br>确定要关闭吗？';
+  document.getElementById('switchModalBtn').textContent = willOn ? '确认开启' : '确认关闭';
+  showModal('switchModal');
+}
+
+function doToggleSwitch() {
+  instantExitOn = !instantExitOn;
+  logs.unshift({
+    type: 'switch',
+    time: nowStr(),
+    user: 'HR管理员',
+    content: instantExitOn ? '开启了「确认离职即时退出钉钉通讯录」' : '关闭了「确认离职即时退出钉钉通讯录」'
+  });
+  closeModal('switchModal');
+  showToast(instantExitOn ? '已开启即时退出功能' : '已关闭即时退出功能', 'success');
+  render();
+}
+
+// ========== 离职管理页面 ==========
+function renderResign(ct) {
+  const pending = employees.filter(e => e.status === '待确认');
+  const confirmed = employees.filter(e => e.status === '已确认');
+  ct.innerHTML = `
+    <div class="fade-in">
+      <div class="page-tabs">
+        <div class="page-tab active" onclick="this.parentElement.querySelectorAll('.page-tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');document.getElementById('tab-pending').style.display='';document.getElementById('tab-confirmed').style.display='none'">待确认离职 (${pending.length})</div>
+        <div class="page-tab" onclick="this.parentElement.querySelectorAll('.page-tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');document.getElementById('tab-pending').style.display='none';document.getElementById('tab-confirmed').style.display=''">已确认离职 (${confirmed.length})</div>
+      </div>
+      <div id="tab-pending">
+        <div class="card">
+          <div class="card-title">待确认离职列表
+            ${instantExitOn ? '<span class="tag tag-on" style="font-size:11px;font-weight:400">即时退出已开启</span>' : ''}
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>姓名</th><th>部门</th><th>离职类型</th><th>离职生效日</th><th>钉钉关联类型</th><th>钉钉关联状态</th><th>操作</th>
+              </tr></thead>
+              <tbody>
+                ${pending.map(e => `<tr>
+                  <td style="font-weight:500">${e.name}</td>
+                  <td>${e.dept}</td>
+                  <td>${e.type}</td>
+                  <td>${e.date}</td>
+                  <td>${e.dingType}</td>
+                  <td>${dingStatusTag(e.dingStatus)}</td>
+                  <td><button class="btn btn-primary" onclick="openConfirm(${e.id})">确认离职</button></td>
+                </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id="tab-confirmed" style="display:none">
+        <div class="card">
+          <div class="card-title">已确认离职列表</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>姓名</th><th>部门</th><th>离职类型</th><th>离职生效日</th><th>钉钉关联类型</th><th>钉钉关联状态</th>
+              </tr></thead>
+              <tbody>
+                ${confirmed.length === 0 ? '<tr><td colspan="6" class="empty">暂无数据</td></tr>' : confirmed.map(e => `<tr>
+                  <td style="font-weight:500">${e.name}</td>
+                  <td>${e.dept}</td>
+                  <td>${e.type}</td>
+                  <td>${e.date}</td>
+                  <td>${e.dingType}</td>
+                  <td>${dingStatusTag(e.dingStatus)}</td>
+                </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function dingStatusTag(s) {
+  if (s === '已关联') return '<span class="tag tag-success">已关联</span>';
+  if (s === '离职解除关联') return '<span class="tag tag-off">离职解除关联</span>';
+  if (s === '关联失败') return '<span class="tag tag-error">关联失败</span>';
+  if (s === '-') return '<span style="color:#c9cdd4">-</span>';
+  return '<span class="tag tag-warn">' + s + '</span>';
+}
+
+// ========== 确认离职交互 ==========
+function openConfirm(id) {
+  pendingEmployee = employees.find(e => e.id === id);
+  if (!pendingEmployee) return;
+  document.getElementById('modalName').textContent = pendingEmployee.name + ' (' + pendingEmployee.dept + ')';
+  document.getElementById('modalType').textContent = pendingEmployee.type;
+  document.getElementById('modalDate').textContent = pendingEmployee.date;
+  document.getElementById('modalDingStatus').innerHTML =
+    pendingEmployee.dingType + ' / ' + dingStatusTag(pendingEmployee.dingStatus);
+  const hint = document.getElementById('instantExitHint');
+  hint.style.display = (instantExitOn && pendingEmployee.dingStatus === '已关联' && pendingEmployee.dingType !== 'SSO' && pendingEmployee.dingType !== '不关联') ? '' : 'none';
+  showModal('confirmModal');
+}
+
+function doConfirmResign() {
+  if (!pendingEmployee) return;
+  const e = pendingEmployee;
+  e.status = '已确认';
+
+  // 判断是否触发即时退出
+  if (instantExitOn) {
+    if (e.dingType === '不关联') {
+      e.exitMethod = '无需处理';
+    } else if (e.dingStatus === '离职解除关联') {
+      e.exitMethod = '已解除，跳过';
+    } else if (e.dingType === 'SSO') {
+      e.exitMethod = 'SSO不处理';
+      showToast(e.name + ' 离职确认成功（SSO账号不执行即时退出）', 'info');
+    } else if (e.dingStatus === '已关联') {
+      // 即时退出成功
+      e.dingStatus = '离职解除关联';
+      e.exitMethod = '即时退出';
+      logs.unshift({type:'resign', time:nowStr(), user:'HR管理员',
+        content: e.name + ' 确认离职，即时退出钉钉通讯录成功'});
+      showToast(e.name + ' 离职确认成功，已即时退出钉钉通讯录', 'success');
+      closeModal('confirmModal');
+      render();
+      return;
+    } else {
+      // 关联失败等异常状态
+      e.exitMethod = '记录异常';
+      logs.unshift({type:'error', time:nowStr(), user:'系统',
+        content: e.name + ' 钉钉关联状态异常（' + e.dingStatus + '），已记录到同步错误日志'});
+      showToast(e.name + ' 离职确认成功，钉钉退出异常已记录', 'error');
+      closeModal('confirmModal');
+      render();
+      return;
+    }
+  } else {
+    e.exitMethod = '等待定时任务';
+  }
+
+  logs.unshift({type:'resign', time:nowStr(), user:'HR管理员',
+    content: e.name + ' 确认离职' + (instantExitOn ? '' : '（即时退出未开启，等待定时任务处理）')});
+  showToast(e.name + ' 离职确认成功', 'success');
+  closeModal('confirmModal');
+  render();
+}
+
+// ========== 同步错误日志页面 ==========
+function renderLog(ct) {
+  const errorLogs = logs.filter(l => l.type === 'error');
+  ct.innerHTML = `
+    <div class="fade-in">
+      <div class="card">
+        <div class="card-title">同步错误日志</div>
+        <div class="card-desc">记录钉钉通讯录同步过程中的异常信息，定时任务将自动兜底处理失败记录。</div>
+        ${errorLogs.length === 0
+          ? '<div class="empty">暂无错误日志</div>'
+          : errorLogs.map(l => `
+            <div class="log-item">
+              <span class="log-time">${l.time}</span>
+              <span class="log-content"><span class="tag tag-error" style="margin-right:6px">异常</span>${l.content}</span>
+            </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ========== 工具函数 ==========
+function showModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast toast-' + (type || 'info') + ' show';
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function nowStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0') + ' ' +
+    String(d.getHours()).padStart(2,'0') + ':' +
+    String(d.getMinutes()).padStart(2,'0') + ':' +
+    String(d.getSeconds()).padStart(2,'0');
+}
+
+// 点击遮罩关闭弹窗
+document.querySelectorAll('.modal-mask').forEach(m => {
+  m.addEventListener('click', function(ev) {
+    if (ev.target === this) this.classList.remove('show');
+  });
+});
+
+// 初始化
+switchPage('automation');
+</script>
+</body>
+</html>
