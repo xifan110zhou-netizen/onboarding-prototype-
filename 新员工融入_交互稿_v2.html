@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新员工融入 · 交互稿 v2</title>
+<style>
+:root {
+  --primary: #4A90E2;
+  --primary-dark: #3a78c4;
+  --primary-light: #eaf3ff;
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --text: #1f2937;
+  --text-light: #6b7280;
+  --text-muted: #9ca3af;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--text); background: var(--bg); height: 100vh; overflow: hidden; font-size: 14px;
+}
+/* ============ 顶部角色切换 ============ */
+.role-switcher {
+  background: #1f2937; color: #fff; padding: 0 24px; height: 44px;
+  display: flex; align-items: center; gap: 16px; font-size: 13px;
+}
+.role-switcher .brand { font-weight: 600; }
+.role-switcher .role-tabs { display: flex; gap: 4px; margin-left: 24px; }
+.role-switcher .role-tab { padding: 4px 14px; border-radius: 4px; cursor: pointer; background: rgba(255,255,255,0.1); transition: 0.2s; }
+.role-switcher .role-tab.active { background: var(--primary); }
+.role-switcher .role-tab:hover:not(.active) { background: rgba(255,255,255,0.18); }
+.role-switcher .hint { margin-left: auto; color: #9ca3af; font-size: 12px; }
+/* ============ 整体框架 ============ */
+.app { display: flex; flex-direction: column; height: calc(100vh - 44px); }
+.workspace { display: flex; flex: 1; overflow: hidden; }
+.sidebar { width: 220px; background: #fff; border-right: 1px solid var(--border); padding: 16px 0; overflow-y: auto; flex-shrink: 0; }
+.sidebar-section { padding: 8px 0; }
+.sidebar-title { padding: 8px 20px; font-size: 12px; color: var(--text-light); font-weight: 600; letter-spacing: 0.5px; }
+.nav-group { font-size: 13px; }
+.nav-group > .nav-group-head {
+  padding: 10px 20px; color: #4b5563; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-group > .nav-group-head:hover { background: var(--gray-50); }
+.nav-item { padding: 9px 20px 9px 44px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: #4b5563; font-size: 14px; border-left: 3px solid transparent; transition: 0.15s; }
+.nav-item:hover { background: var(--gray-50); color: var(--primary); }
+.nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 500; }
+.nav-icon { font-size: 16px; }
+.main { flex: 1; overflow-y: auto; padding: 24px 32px; }
+.page { display: none; }
+.page.active { display: block; }
+/* ============ 通用 ============ */
+.breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; color: var(--text-light); font-size: 13px; }
+.breadcrumb a { color: var(--primary); text-decoration: none; cursor: pointer; }
+.breadcrumb .sep { color: #d1d5db; }
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.page-title { font-size: 22px; font-weight: 600; }
+.page-subtitle { color: var(--text-light); font-size: 13px; margin-top: 4px; }
+.btn { padding: 7px 16px; border: 1px solid var(--border); border-radius: 4px; background: #fff; cursor: pointer; font-size: 13px; color: var(--text); transition: 0.15s; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; }
+.btn:hover { border-color: var(--primary); color: var(--primary); }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-dark); color: #fff; }
+.btn-danger { background: #fff; color: var(--danger); border-color: #fecaca; }
+.btn-danger:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn-text { background: transparent; border: none; color: var(--primary); padding: 4px 8px; cursor: pointer; font-size: 13px; }
+.btn-text:hover { color: var(--primary-dark); text-decoration: underline; }
+.btn-text.danger { color: var(--danger); }
+.btn-text.danger:hover { color: #b91c1c; }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; }
+.toolbar-left, .toolbar-right { display: flex; gap: 8px; align-items: center; }
+.search-input { padding: 7px 12px; border: 1px solid var(--border); border-radius: 4px; width: 240px; font-size: 13px; }
+.filter-select { padding: 7px 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; background: #fff; }
+.tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.tab { padding: 10px 18px; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-light); font-size: 14px; transition: 0.15s; }
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 500; }
+.tab .badge { background: var(--gray-100); color: var(--text-light); padding: 1px 7px; border-radius: 10px; font-size: 11px; margin-left: 5px; }
+.tab.active .badge { background: var(--primary-light); color: var(--primary); }
+.subtabs { display: inline-flex; background: var(--gray-100); border-radius: 6px; padding: 3px; gap: 2px; margin-bottom: 16px; }
+.subtab { padding: 6px 16px; border-radius: 4px; cursor: pointer; color: var(--text-light); font-size: 13px; }
+.subtab.active { background: #fff; color: var(--text); font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+.table { width: 100%; border-collapse: collapse; background: #fff; }
+.table th { text-align: left; padding: 11px 14px; background: var(--gray-50); border-bottom: 1px solid var(--border); color: var(--text-light); font-weight: 500; font-size: 13px; }
+.table td { padding: 13px 14px; border-bottom: 1px solid var(--gray-100); font-size: 13px; vertical-align: middle; }
+.table tr:hover { background: var(--gray-50); }
+.table-name { color: var(--primary); font-weight: 500; cursor: pointer; }
+.table-name:hover { text-decoration: underline; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 500; }
+.tag-active { background: #d1fae5; color: #065f46; }
+.tag-inactive { background: #f3f4f6; color: #6b7280; }
+.tag-draft { background: #fef3c7; color: #92400e; }
+.tag-progress { background: #dbeafe; color: #1e40af; }
+.tag-done { background: #d1fae5; color: #065f46; }
+.tag-expire { background: #fee2e2; color: #991b1b; }
+.tag-cancel { background: #f3f4f6; color: #6b7280; }
+.tag-todo { background: #fef3c7; color: #92400e; }
+.tag-required { background: #fee2e2; color: #991b1b; }
+.tag-optional { background: #e0e7ff; color: #3730a3; }
+.tag-priority { background: #fce7f3; color: #9d174d; }
+/* 头像 */
+.avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+.avatar-row { display: flex; align-items: center; gap: 8px; }
+.avatar-row .meta { font-size: 12px; color: var(--text-light); }
+/* 进度条 */
+.progress-row { display: flex; align-items: center; gap: 10px; min-width: 140px; }
+.progress-bar { flex: 1; height: 6px; background: var(--gray-100); border-radius: 3px; overflow: hidden; min-width: 80px; }
+.progress-fill { height: 100%; background: var(--primary); border-radius: 3px; }
+.progress-fill.done { background: var(--success); }
+.progress-fill.danger { background: var(--danger); }
+.progress-text { font-size: 12px; color: var(--text-light); min-width: 50px; }
+/* ============ 弹窗 ============ */
+.modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-mask.show { display: flex; }
+.modal { background: #fff; border-radius: 8px; max-width: 560px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 12px 40px rgba(0,0,0,0.18); }
+.modal.lg { max-width: 720px; }
+.modal.xl { max-width: 900px; }
+.modal-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-size: 16px; font-weight: 600; }
+.modal-close { background: none; border: none; cursor: pointer; color: var(--text-light); font-size: 18px; padding: 4px; }
+.modal-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+.modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+/* 表单 */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 13px; color: var(--text); margin-bottom: 6px; font-weight: 500; }
+.form-label .req { color: var(--danger); margin-left: 2px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 7px 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px;
+  background: #fff; font-family: inherit;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-light); }
+.form-textarea { resize: vertical; min-height: 70px; }
+.form-helper { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-section-title { font-size: 13px; color: var(--text-light); font-weight: 600; margin: 16px 0 12px; padding-bottom: 6px; border-bottom: 1px dashed var(--gray-200); }
+/* 开关 */
+.switch { position: relative; display: inline-block; width: 36px; height: 20px; vertical-align: middle; }
+.switch input { display: none; }
+.switch-slider { position: absolute; cursor: pointer; inset: 0; background: #cbd5e0; border-radius: 20px; transition: 0.2s; }
+.switch-slider::before { content: ''; position: absolute; height: 14px; width: 14px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: 0.2s; }
+.switch input:checked + .switch-slider { background: var(--primary); }
+.switch input:checked + .switch-slider::before { transform: translateX(16px); }
+/* 状态指示点 */
+.dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+.dot.progress { background: var(--primary); }
+.dot.done { background: var(--success); }
+.dot.expire { background: var(--danger); }
+.dot.cancel { background: #9ca3af; }
+.dot.todo { background: var(--warning); }
+/* 复选 */
+.row-check { width: 14px; height: 14px; cursor: pointer; }
+/* 计划详情 */
+.detail-grid { display: grid; grid-template-columns: 320px 1fr; gap: 16px; align-items: start; }
+.employee-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.employee-card .name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.employee-card .meta { color: var(--text-light); font-size: 13px; margin-bottom: 6px; }
+.employee-card .progress-block { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-100); }
+.employee-card .label { font-size: 12px; color: var(--text-light); margin-bottom: 6px; }
+.employee-card .value { font-size: 14px; }
+.kv-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+.kv-row .k { color: var(--text-light); }
+.stage-block { background: #fff; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+.stage-head { padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: var(--gray-50); border-bottom: 1px solid var(--border); }
+.stage-head .stage-title { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.stage-head .caret { transition: 0.2s; }
+.stage-block.collapsed .stage-head .caret { transform: rotate(-90deg); }
+.stage-block.collapsed .stage-body { display: none; }
+.stage-body { padding: 0; }
+.stage-stat { font-size: 12px; color: var(--text-light); }
+/* 方案编辑详情页 */
+.plan-edit-grid { display: grid; grid-template-columns: 260px 1fr; gap: 16px; align-items: start; }
+.stage-list-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+.stage-list-panel .panel-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px 10px; border-bottom: 1px solid var(--gray-100); margin-bottom: 8px; }
+.stage-list-panel .panel-head .title { font-weight: 600; font-size: 14px; }
+.stage-item { padding: 10px 12px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+.stage-item:hover { background: var(--gray-50); }
+.stage-item.active { background: var(--primary-light); color: var(--primary); font-weight: 500; }
+.stage-item .num { font-size: 11px; color: var(--text-muted); margin-left: 6px; }
+.stage-item .actions { display: none; gap: 4px; }
+.stage-item:hover .actions { display: flex; }
+.stage-item.active .num { color: var(--primary); }
+.template-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+/* 字段预览 */
+.field-preview-list { border: 1px dashed var(--gray-200); background: var(--gray-50); border-radius: 6px; padding: 12px; max-height: 220px; overflow-y: auto; }
+.field-preview-item { padding: 8px 10px; background: #fff; border: 1px solid var(--border); border-radius: 4px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; }
+.field-preview-item:last-child { margin-bottom: 0; }
+.field-preview-item .ftype { color: var(--text-light); font-size: 11.5px; }
+.field-preview-item .fname { font-weight: 500; }
+.field-preview-item.locked { background: var(--gray-50); color: var(--text-light); }
+/* 触发时机 容器 */
+.trigger-block { padding: 12px; border: 1px dashed var(--gray-200); border-radius: 6px; margin-bottom: 12px; background: var(--gray-50); }
+.trigger-block-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.trigger-block-head .trigger-title { font-size: 13px; font-weight: 500; }
+.trigger-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.trigger-row .inline-input { width: 60px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 4px; text-align: center; }
+.trigger-disabled { opacity: 0.5; pointer-events: none; }
+/* 钉钉提醒级联 */
+.remind-row { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 8px; }
+.remind-row .lbl { width: 110px; color: var(--text-light); }
+.remind-row select { flex: 1; }
+/* 适用范围多选 chips */
+.chip-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px; border: 1px solid var(--border); border-radius: 4px; min-height: 38px; background: #fff; }
+.chip { background: var(--primary-light); color: var(--primary); border-radius: 3px; padding: 2px 8px; font-size: 12px; display: inline-flex; align-items: center; gap: 4px; }
+.chip .x { cursor: pointer; opacity: 0.7; }
+.chip .x:hover { opacity: 1; }
+.chip-input { border: none; outline: none; font-size: 13px; padding: 2px; min-width: 80px; flex: 1; background: transparent; }
+/* toast */
+.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 8px 16px; border-radius: 4px; font-size: 13px; z-index: 2000; opacity: 0; transition: 0.3s; }
+.toast.show { opacity: 1; }
+/* 设置侧通用提示 */
+.alert { padding: 10px 14px; background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; border-radius: 4px; font-size: 13px; margin-bottom: 12px; }
+.alert.info { background: var(--primary-light); border-color: #bfdbfe; color: #1e40af; }
+/* 适用范围显示文本 */
+.range-text { color: var(--text-light); font-size: 12px; }
+/* 列表里的操作单元 */
+.row-ops { display: inline-flex; gap: 4px; align-items: center; }
+.row-ops .sep { color: var(--gray-200); }
+/* 角色页面可见性控制 */
+[data-role-only] { display: none; }
+/* 计划详情 stage 状态 */
+.stage-status-pill { font-size: 11px; padding: 1px 8px; border-radius: 10px; background: var(--gray-100); color: var(--text-light); margin-left: 8px; }
+.stage-status-pill.in-progress { background: var(--primary-light); color: var(--primary); }
+.stage-status-pill.done { background: #d1fae5; color: #065f46; }
+/* 任务模板列表上的运行参数小标 */
+.template-card { padding: 14px 16px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 10px; background: #fff; }
+.template-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.template-card-head .t-name { font-weight: 600; }
+.template-card-meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--text-light); }
+.template-card-meta b { color: var(--text); font-weight: 500; }
+/* 适用范围弹窗下拉树 */
+.tree { font-size: 13px; }
+.tree-node { padding: 4px 0; }
+.tree-node label { cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.tree-children { margin-left: 18px; }
+/* 添加任务弹窗里的 type/form 联动提示 */
+.pick-hint { font-size: 12px; color: var(--text-light); padding: 6px 0; }
+/* 空状态 */
+.empty { text-align: center; padding: 40px; color: var(--text-light); font-size: 13px; }
+.empty .icon { font-size: 36px; margin-bottom: 8px; }
+/* 表单画布（办理弹窗用） */
+.handler-form .field { margin-bottom: 14px; }
+.handler-form .field label { display: block; margin-bottom: 6px; font-size: 13px; }
+.handler-form .field .input, .handler-form .field input[type=text],
+.handler-form .field input[type=date], .handler-form .field textarea, .handler-form .field select {
+  width: 100%; padding: 7px 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-family: inherit;
+}
+.handler-form .field textarea { min-height: 80px; }
+.handler-form .upload-area {
+  border: 1px dashed var(--border); border-radius: 4px; padding: 14px; text-align: center;
+  color: var(--text-light); font-size: 13px; cursor: pointer;
+}
+.handler-form .upload-area:hover { border-color: var(--primary); color: var(--primary); }
+.handler-form .upload-list { margin-top: 8px; font-size: 12px; }
+.handler-form .upload-list .file { padding: 4px 8px; background: var(--gray-50); border-radius: 3px; margin-bottom: 4px; display: flex; justify-content: space-between; }
+/* 内置任务跳转面板 */
+.builtin-jump { padding: 20px; text-align: center; background: var(--primary-light); border-radius: 6px; color: var(--text); }
+.builtin-jump .icon { font-size: 32px; margin-bottom: 8px; }
+/* 滚动条 */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+::-webkit-scrollbar-track { background: transparent; }
+</style>
+</head>
+<body>
+
+<!-- ====== 顶部角色切换条 ====== -->
+<div class="role-switcher">
+  <span class="brand">公子起暖人事</span>
+  <span style="color:#9ca3af;font-size:12px">交互稿 · 视角切换</span>
+  <div class="role-tabs">
+    <div class="role-tab active" data-role="hr" onclick="switchRole('hr')">HR · 人力资源</div>
+    <div class="role-tab" data-role="handler" onclick="switchRole('handler')">办理人 · 直接经理</div>
+    <div class="role-tab" data-role="employee" onclick="switchRole('employee')">员工 · 本人</div>
+  </div>
+  <span class="hint">演示用，仅作前端交互参考</span>
+</div>
+
+<div class="app">
+  <div class="workspace">
+    <!-- ====== 左侧栏 ====== -->
+    <aside class="sidebar">
+      <!-- HR 视角侧栏 -->
+      <div data-role-show="hr" style="display:block">
+        <div class="nav-group">
+          <div class="nav-group-head"><span>📋 新员工管理</span></div>
+          <div class="nav-item active" data-page="p2" onclick="goto('p2')">新员工融入</div>
+          <div class="nav-item" data-page="p1" onclick="goto('p1')">融入任务</div>
+        </div>
+        <div class="nav-group" style="margin-top:8px">
+          <div class="nav-group-head"><span>⚙️ 人事设置</span></div>
+          <div class="nav-item" data-page="s1" onclick="goto('s1')">新员工融入设置 · 任务类型</div>
+          <div class="nav-item" data-page="s2" onclick="goto('s2')">新员工融入设置 · 任务方案</div>
+        </div>
+      </div>
+      <!-- 办理人/员工 视角侧栏 -->
+      <div data-role-show="handler" style="display:none">
+        <div class="nav-group">
+          <div class="nav-group-head"><span>✅ 我的工作台</span></div>
+          <div class="nav-item active" data-page="handler-list" onclick="goto('handler-list')">我负责的任务</div>
+        </div>
+      </div>
+      <div data-role-show="employee" style="display:none">
+        <div class="nav-group">
+          <div class="nav-group-head"><span>👤 我的入职</span></div>
+          <div class="nav-item active" data-page="employee-list" onclick="goto('employee-list')">我的融入任务</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ====== 主区域 ====== -->
+    <main class="main" id="main">
+      <!-- 各 page 在这里 -->
+    </main>
+  </div>
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================ 脚本 ============================ -->
+<script>
+// ===== 全局状态 =====
+const state = {
+  role: 'hr',          // hr / handler / employee
+  page: 'p2',          // current page id
+  p1Tab: 'progress',   // 融入任务页 tab：progress/done/cancel
+  p2Sub: 'unstarted',  // 新员工融入页 子tab：started/unstarted
+  p2StartedTab: 'progress', // 已发起员工下进一步筛选
+  s1Tab: 'custom',     // 任务类型 tab：custom/builtin
+  handlerTab: 'todo',  // 办理人/员工 tab：todo/done/cancel/expire
+  // 数据
+  selectedPlanId: null,
+  selectedPlanStage: 0,
+  editingPlan: null,
+};
+
+// ===== 工具 =====
+function $(s, el=document) { return el.querySelector(s); }
+function $$(s, el=document) { return Array.from(el.querySelectorAll(s)); }
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ===== 角色切换 =====
+function switchRole(role) {
+  state.role = role;
+  $$('.role-tab').forEach(t => t.classList.toggle('active', t.dataset.role === role));
+  $$('[data-role-show]').forEach(el => {
+    el.style.display = el.dataset.roleShow === role ? 'block' : 'none';
+  });
+  if (role === 'hr') goto('p2');
+  if (role === 'handler') goto('handler-list');
+  if (role === 'employee') goto('employee-list');
+}
+
+// ===== 路由 =====
+function goto(page, payload) {
+  state.page = page;
+  if (payload && payload.planId !== undefined) state.selectedPlanId = payload.planId;
+  $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === page));
+  renderMain();
+}
+
+// ===== 渲染入口 =====
+function renderMain() {
+  const m = $('#main');
+  switch(state.page) {
+    case 'p1': m.innerHTML = renderP1(); bindP1(); break;
+    case 'p2': m.innerHTML = renderP2(); bindP2(); break;
+    case 'plan-detail': m.innerHTML = renderPlanDetail(); bindPlanDetail(); break;
+    case 's1': m.innerHTML = renderS1(); bindS1(); break;
+    case 's2': m.innerHTML = renderS2(); bindS2(); break;
+    case 's2-edit': m.innerHTML = renderS2Edit(); bindS2Edit(); break;
+    case 'handler-list': m.innerHTML = renderHandlerList(); bindHandlerList(); break;
+    case 'employee-list': m.innerHTML = renderEmployeeList(); bindHandlerList(); break;
+    default: m.innerHTML = '';
+  }
+}
+
+// ===== Mock 数据 =====
+const MOCK = {
+  // 计划列表（融入任务页 / 新员工融入页 已发起员工 共用数据源）
+  plans: [
+    { id: 'PL001', emp: '孙悦文', dept: '研发部', position: '前端工程师', joinDate: '2026-04-22', manager: '兰雅文', planName: '研发岗融入方案', total: 12, done: 7, cancelled: 1, expired: 1, status: 'progress' },
+    { id: 'PL002', emp: '陈志宏', dept: '研发部', position: '后端工程师', joinDate: '2026-04-08', manager: '兰雅文', planName: '研发岗融入方案', total: 12, done: 5, cancelled: 0, expired: 2, status: 'progress' },
+    { id: 'PL003', emp: '李文博', dept: '产品部', position: '产品经理', joinDate: '2026-04-01', manager: '高敏', planName: '产品岗融入方案', total: 10, done: 10, cancelled: 0, expired: 0, status: 'done' },
+    { id: 'PL004', emp: '张玲', dept: '市场部', position: '市场专员', joinDate: '2026-03-15', manager: 'Jun', planName: '通用融入方案', total: 8, done: 6, cancelled: 0, expired: 2, status: 'done' },
+    { id: 'PL005', emp: '王伟', dept: '研发部', position: 'iOS 工程师', joinDate: '2026-04-25', manager: '兰雅文', planName: '研发岗融入方案', total: 12, done: 3, cancelled: 0, expired: 0, status: 'progress' },
+    { id: 'PL006', emp: '周文倩', dept: '人力资源部', position: 'HRBP', joinDate: '2026-03-30', manager: '高敏', planName: '通用融入方案', total: 8, done: 5, cancelled: 3, expired: 0, status: 'cancel' },
+  ],
+  // 未发起员工
+  unstartedEmps: [
+    { id: 'E0001', name: '林海洋', dept: '研发部', position: '测试工程师', joinDate: '2026-05-12', manager: '兰雅文' },
+    { id: 'E0002', name: '何家成', dept: '研发部', position: '前端工程师', joinDate: '2026-05-08', manager: '兰雅文' },
+    { id: 'E0003', name: '蒋婷婷', dept: '产品部', position: '产品助理', joinDate: '2026-05-04', manager: '高敏' },
+    { id: 'E0004', name: '高一鸣', dept: '运营部', position: '内容运营', joinDate: '2026-05-15', manager: 'Jun' },
+    { id: 'E0005', name: '罗志远', dept: '财务部', position: '会计', joinDate: '2026-05-11', manager: '王月' },
+  ],
+  // 计划详情：阶段 + 任务实例
+  planDetail: {
+    'PL001': {
+      stages: [
+        { name: '入职第 1 周', tasks: [
+          { id: 'T1', name: '补充个人花名册信息', type: '内置 · 补充花名册信息', handler: '孙悦文（本人）', start: '2026-04-22', due: '2026-04-29', status: 'done' },
+          { id: 'T2', name: '阅读员工手册并签署确认书', type: '自定义 · 入职准备', handler: '孙悦文（本人）', start: '2026-04-22', due: '2026-04-29', status: 'done' },
+          { id: 'T3', name: '直接经理 1v1 入职面谈', type: '自定义 · 经理任务', handler: '兰雅文（直接经理）', start: '2026-04-22', due: '2026-04-29', status: 'done' },
+        ]},
+        { name: '入职第 2 周', tasks: [
+          { id: 'T4', name: '提交试用期目标计划', type: '内置 · 绩效任务', handler: '孙悦文（本人）', start: '2026-04-29', due: '2026-05-13', status: 'done' },
+          { id: 'T5', name: '完成新人入职培训', type: '内置 · 学习任务', handler: '孙悦文（本人）', start: '2026-04-29', due: '2026-05-13', status: 'done' },
+          { id: 'T6', name: '团队成员介绍与团建', type: '自定义 · 经理任务', handler: '兰雅文（直接经理）', start: '2026-04-29', due: '2026-05-13', status: 'done' },
+        ]},
+        { name: '入职第 1 月', tasks: [
+          { id: 'T7', name: '完成首次月度复盘', type: '自定义 · 经理任务', handler: '兰雅文（直接经理）', start: '2026-05-22', due: '2026-05-29', status: 'progress' },
+          { id: 'T8', name: '提交个人融入感受', type: '自定义 · 员工反馈', handler: '孙悦文（本人）', start: '2026-05-22', due: '2026-05-29', status: 'progress' },
+          { id: 'T9', name: '业务知识阶段测验', type: '内置 · 学习任务', handler: '孙悦文（本人）', start: '2026-05-22', due: '2026-05-29', status: 'todo' },
+          { id: 'T10', name: '附件类自定义任务（旧）', type: '自定义 · 资料收集', handler: '孙悦文（本人）', start: '2026-04-22', due: '2026-04-25', status: 'cancel' },
+          { id: 'T11', name: '逾期未办示例', type: '自定义 · 资料收集', handler: '孙悦文（本人）', start: '2026-04-22', due: '2026-04-25', status: 'expire' },
+        ]},
+        { name: '入职第 3 月', tasks: [
+          { id: 'T12', name: '试用期考核（直接经理）', type: '内置 · 绩效任务', handler: '兰雅文（直接经理）', start: '2026-07-22', due: '2026-07-29', status: 'todo' },
+        ]},
+      ]
+    }
+  },
+  // 任务类型（设置侧）
+  taskTypes: {
+    custom: [
+      { id: 'CT01', name: '入职准备', desc: '员工本人办理的入职相关任务', count: 3, enabled: true, builtin: false },
+      { id: 'CT02', name: '经理任务', desc: '直接经理需要执行的任务', count: 5, enabled: true, builtin: false },
+      { id: 'CT03', name: '员工反馈', desc: '员工填写的反馈/感受类任务', count: 2, enabled: true, builtin: false },
+      { id: 'CT04', name: '资料收集', desc: '需要上传资料类的任务', count: 1, enabled: false, builtin: false },
+    ],
+    builtin: [
+      { id: 'BT01', name: '补充花名册信息', desc: '系统内置，跳转至花名册补充对应字段', count: 1, enabled: true, builtin: true },
+      { id: 'BT02', name: '绩效任务', desc: '系统内置，跳转至绩效模块提交目标 / 考核', count: 2, enabled: true, builtin: true },
+      { id: 'BT03', name: '学习任务', desc: '系统内置，跳转至培训模块完成学习', count: 2, enabled: true, builtin: true },
+      { id: 'BT04', name: '试用期管理', desc: 'HR 新增内置子任务（示例）', count: 0, enabled: true, builtin: false },
+    ]
+  },
+  // 任务表单（设置侧）
+  taskForms: [
+    { id: 'TF01', name: '试用期目标计划', subTypeId: 'BT02', subTypeName: '绩效任务', external: true,
+      fields: [
+        { name: '关联绩效周期', type: '业务字段', locked: true },
+        { name: '关键工作目标', type: '富文本', locked: true },
+        { name: '评估方式', type: '单选', locked: true },
+      ]
+    },
+    { id: 'TF02', name: '试用期考核', subTypeId: 'BT02', subTypeName: '绩效任务', external: true,
+      fields: [
+        { name: '考核类型', type: '业务字段', locked: true },
+        { name: '考核维度', type: '业务字段', locked: true },
+      ]
+    },
+    { id: 'TF03', name: '补充个人花名册信息', subTypeId: 'BT01', subTypeName: '补充花名册信息', external: true,
+      fields: [
+        { name: '花名册字段', type: '业务组件', locked: true, note: '需补充字段：身份证号、紧急联系人、银行卡' },
+      ]
+    },
+    { id: 'TF04', name: '新员工入职培训', subTypeId: 'BT03', subTypeName: '学习任务', external: true,
+      fields: [
+        { name: '关联课程', type: '业务组件', locked: true },
+      ]
+    },
+    { id: 'TF05', name: '入职面谈记录', subTypeId: 'CT02', subTypeName: '经理任务', external: false,
+      fields: [
+        { name: '面谈时间', type: '日期', locked: false },
+        { name: '面谈纪要', type: '富文本', locked: false },
+        { name: '附件', type: '附件', locked: false, note: '允许上传附件' },
+      ]
+    },
+    { id: 'TF06', name: '员工手册签收', subTypeId: 'CT01', subTypeName: '入职准备', external: false,
+      fields: [
+        { name: '签收日期', type: '日期', locked: false },
+        { name: '签收说明', type: '富文本', locked: false },
+        { name: '签收附件', type: '附件', locked: false, note: '允许上传附件' },
+      ]
+    },
+    { id: 'TF07', name: '个人融入感受', subTypeId: 'CT03', subTypeName: '员工反馈', external: false,
+      fields: [
+        { name: '整体满意度', type: '单选', locked: false },
+        { name: '感受描述', type: '富文本', locked: false },
+      ]
+    },
+    { id: 'TF08', name: '团队团建合影上传', subTypeId: 'CT02', subTypeName: '经理任务', external: false,
+      fields: [
+        { name: '活动日期', type: '日期', locked: false },
+        { name: '合影附件', type: '附件', locked: false, note: '允许上传附件' },
+      ]
+    },
+  ],
+  // 任务方案
+  plansSetting: [
+    {
+      id: 'SC01', name: '研发岗融入方案', desc: '面向研发部门新员工', priority: 100,
+      range: ['研发部', '正式员工'],
+      stages: [
+        { name: '入职第 1 周', templates: [
+          { id: 'TPL01', formId: 'TF03', exec: '员工本人', auto: true, triggerDay: 0, hasDue: true, dueDay: 7, startTime: '2026-01-01', remindPub: '提醒-融入下发', remindDue: '提醒-融入截止' },
+          { id: 'TPL02', formId: 'TF06', exec: '员工本人', auto: true, triggerDay: 0, hasDue: true, dueDay: 7, startTime: '2026-01-01', remindPub: '提醒-融入下发', remindDue: '提醒-融入截止' },
+          { id: 'TPL03', formId: 'TF05', exec: '直接经理', auto: true, triggerDay: 0, hasDue: true, dueDay: 7, startTime: '2026-01-01', remindPub: '提醒-融入下发', remindDue: '提醒-融入截止' },
+        ]},
+        { name: '入职第 2 周', templates: [
+          { id: 'TPL04', formId: 'TF01', exec: '员工本人', auto: true, triggerDay: 7, hasDue: true, dueDay: 14, startTime: '2026-01-01', remindPub: '提醒-融入下发', remindDue: '提醒-融入截止' },
+          { id: 'TPL05', formId: 'TF04', exec: '员工本人', auto: true, triggerDay: 7, hasDue: true, dueDay: 14, startTime: '2026-01-01', remindPub: '提醒-融入下发', remindDue: '提醒-融入截止' },
+        ]},
+        { name: '入职第 1 月', templates: [
+          { id: 'TPL06', formId: 'TF07', exec: '员工本人', auto: true, triggerDay: 30, hasDue: true, dueDay: 37, startTime: '2026-01-01', remindPub: '提醒-融入下发', remindDue: '提醒-融入截止' },
+        ]},
+        { name: '入职第 3 月', templates: [
+          { id: 'TPL07', formId: 'TF02', exec: '直接经理', auto: true, triggerDay: 80, hasDue: true, dueDay: 90, startTime: '2026-01-01', remindPub: '提醒-融入下发', remindDue: '提醒-融入截止' },
+        ]},
+      ]
+    },
+    {
+      id: 'SC02', name: '产品岗融入方案', desc: '面向产品/设计岗', priority: 90,
+      range: ['产品部', '设计部'],
+      stages: [
+        { name: '入职第 1 周', templates: [
+          { id: 'TPL08', formId: 'TF03', exec: '员工本人', auto: true, triggerDay: 0, hasDue: true, dueDay: 7, startTime: '2026-01-01', remindPub: '提醒-融入下发', remindDue: '提醒-融入截止' },
+        ]},
+      ]
+    },
+    {
+      id: 'SC03', name: '通用融入方案', desc: '兜底方案', priority: 10,
+      range: ['全公司'],
+      stages: [
+        { name: '入职第 1 周', templates: [
+          { id: 'TPL09', formId: 'TF03', exec: '员工本人', auto: true, triggerDay: 0, hasDue: true, dueDay: 7, startTime: '2026-01-01', remindPub: '提醒-融入下发', remindDue: '提醒-融入截止' },
+          { id: 'TPL10', formId: 'TF05', exec: '直接经理', auto: true, triggerDay: 0, hasDue: true, dueDay: 7, startTime: '2026-01-01', remindPub: '提醒-融入下发', remindDue: '提醒-融入截止' },
+        ]},
+      ]
+    },
+  ],
+  // 钉钉提醒规则（级联）
+  remindRules: [
+    { main: '入职管理', subs: ['入职完成提醒', '入职材料催办'] },
+    { main: '融入管理', subs: ['提醒-融入下发', '提醒-融入截止'] },
+    { main: '试用期管理', subs: ['转正前30天', '转正前7天'] },
+  ],
+  // 部门 / 雇佣类型（用于适用范围）
+  depts: ['研发部', '产品部', '设计部', '市场部', '运营部', '人力资源部', '财务部', '总裁办'],
+  employTypes: ['正式员工', '试用期员工', '外包员工', '实习生'],
+  // 办理人 / 员工 端任务（基于 MOCK.planDetail['PL001'] 拍平，再补充几条）
+  taskListByRole: () => {
+    // handler = 直接经理 视角；employee = 员工本人 视角
+    const rows = [];
+    Object.entries(MOCK.planDetail).forEach(([pid, p]) => {
+      p.stages.forEach((stg, si) => {
+        stg.tasks.forEach(t => {
+          rows.push({ ...t, stageName: stg.name, planEmp: MOCK.plans.find(x => x.id === pid)?.emp || '—', planId: pid });
+        });
+      });
+    });
+    // 多塞几条
+    rows.push({ id: 'TX1', name: '为陈志宏 1v1 入职面谈', type: '自定义 · 经理任务', handler: '兰雅文（直接经理）', start: '2026-04-08', due: '2026-04-15', status: 'progress', stageName: '入职第 1 周', planEmp: '陈志宏', planId: 'PL002' });
+    rows.push({ id: 'TX2', name: '为王伟 1v1 入职面谈', type: '自定义 · 经理任务', handler: '兰雅文（直接经理）', start: '2026-04-25', due: '2026-05-02', status: 'progress', stageName: '入职第 1 周', planEmp: '王伟', planId: 'PL005' });
+    return rows;
+  }
+};
+
+// ====== 状态映射文案 ======
+const STATUS_LABEL = {
+  progress: { label: '进行中', cls: 'tag-progress', dot: 'progress' },
+  done: { label: '已完成', cls: 'tag-done', dot: 'done' },
+  todo: { label: '未开始', cls: 'tag-todo', dot: 'todo' },
+  expire: { label: '已过期', cls: 'tag-expire', dot: 'expire' },
+  cancel: { label: '已撤销', cls: 'tag-cancel', dot: 'cancel' },
+};
+const PLAN_STATUS = {
+  progress: '进行中',
+  done: '已完成',
+  cancel: '已取消',
+};
+
+// ====== 初始化 ======
+document.addEventListener('DOMContentLoaded', () => {
+  switchRole('hr');
+  goto('p2');
+});
+
+// ====== 工具：渲染头像 / 进度 ======
+function renderAvatar(name) {
+  return `<span class="avatar">${(name || '').slice(0, 1)}</span>`;
+}
+function renderEmpCell(name, sub) {
+  return `<div class="avatar-row">${renderAvatar(name)}<div><div>${name}</div>${sub ? `<div class="meta">${sub}</div>` : ''}</div></div>`;
+}
+function renderProgress(done, total, expired = 0, cancelled = 0) {
+  // 融入进度 = 已完成 / 未撤销
+  const denom = Math.max(0, total - cancelled);
+  const pct = denom === 0 ? 0 : Math.round(done / denom * 100);
+  let cls = 'progress-fill';
+  if (pct === 100) cls += ' done';
+  if (expired > 0 && pct < 100) cls += ' danger';
+  return `<div class="progress-row">
+    <div class="progress-bar"><div class="${cls}" style="width:${pct}%"></div></div>
+    <span class="progress-text">${done}/${denom} · ${pct}%</span>
+  </div>`;
+}
+function planStatusTag(s) {
+  const map = { progress: 'tag-progress', done: 'tag-done', cancel: 'tag-cancel' };
+  return `<span class="tag ${map[s]}">${PLAN_STATUS[s]}</span>`;
+}
+
+// ====================== P1 · 融入任务页 ======================
+function renderP1() {
+  const tabs = [
+    { key: 'progress', label: '进行中' },
+    { key: 'done', label: '已完成' },
+    { key: 'cancel', label: '已取消' },
+  ];
+  const filtered = MOCK.plans.filter(p => p.status === state.p1Tab);
+  const counts = { progress: 0, done: 0, cancel: 0 };
+  MOCK.plans.forEach(p => counts[p.status]++);
+
+  return `
+  <div class="breadcrumb">
+    <a>人事</a><span class="sep">/</span><a>新员工管理</a><span class="sep">/</span><span>融入任务</span>
+  </div>
+  <div class="page-header">
+    <div>
+      <div class="page-title">融入任务</div>
+      <div class="page-subtitle">按人员维度查看融入计划与整体进度（融入进度 = 已完成 / 未撤销）</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      ${tabs.map(t => `
+        <div class="tab ${state.p1Tab === t.key ? 'active' : ''}" onclick="state.p1Tab='${t.key}'; renderMain()">
+          ${t.label}<span class="badge">${counts[t.key]}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <input class="search-input" placeholder="搜索员工/部门/方案">
+        <select class="filter-select">
+          <option>全部部门</option>${MOCK.depts.map(d => `<option>${d}</option>`).join('')}
+        </select>
+        <select class="filter-select">
+          <option>全部方案</option>${MOCK.plansSetting.map(p => `<option>${p.name}</option>`).join('')}
+        </select>
+        <select class="filter-select">
+          <option>入职日期 · 不限</option>
+          <option>近 7 天</option><option>近 30 天</option><option>近 90 天</option>
+        </select>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn">导出</button>
+      </div>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width:160px">人员</th>
+          <th>部门</th>
+          <th>职务</th>
+          <th>入职日期</th>
+          <th>直接经理</th>
+          <th>所属方案</th>
+          <th>融入状态</th>
+          <th style="width:160px">融入进度</th>
+          <th style="width:90px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.length === 0 ? `<tr><td colspan="9"><div class="empty">📭 暂无数据</div></td></tr>` :
+          filtered.map(p => `
+          <tr>
+            <td>${renderEmpCell(p.emp)}</td>
+            <td>${p.dept}</td>
+            <td>${p.position}</td>
+            <td>${p.joinDate}</td>
+            <td>${p.manager}</td>
+            <td>${p.planName}</td>
+            <td>${planStatusTag(p.status)}</td>
+            <td>${renderProgress(p.done, p.total, p.expired, p.cancelled)}</td>
+            <td><button class="btn-text" onclick="goto('plan-detail', { planId: '${p.id}' })">查看</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+function bindP1() {}
+
+// ====================== P2 · 新员工融入页 ======================
+function renderP2() {
+  if (state.p2Sub === 'started') return renderP2Started();
+  return renderP2Unstarted();
+}
+function renderP2Started() {
+  const tabs = [
+    { key: 'progress', label: '进行中' },
+    { key: 'done', label: '已完成' },
+    { key: 'cancel', label: '已取消' },
+  ];
+  const counts = { progress: 0, done: 0, cancel: 0 };
+  MOCK.plans.forEach(p => counts[p.status]++);
+  const filtered = MOCK.plans.filter(p => p.status === state.p2StartedTab);
+
+  return `
+  <div class="breadcrumb">
+    <a>人事</a><span class="sep">/</span><a>新员工管理</a><span class="sep">/</span><span>新员工融入</span>
+  </div>
+  <div class="page-header">
+    <div>
+      <div class="page-title">新员工融入</div>
+      <div class="page-subtitle">新员工方案的发起情况；可在「未发起员工」补发方案</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="subtabs">
+      <div class="subtab ${state.p2Sub === 'started' ? 'active' : ''}" onclick="state.p2Sub='started'; renderMain()">已发起员工</div>
+      <div class="subtab ${state.p2Sub === 'unstarted' ? 'active' : ''}" onclick="state.p2Sub='unstarted'; renderMain()">未发起员工<span style="background:#fee2e2;color:#991b1b;padding:1px 6px;border-radius:8px;font-size:11px;margin-left:6px">${MOCK.unstartedEmps.length}</span></div>
+    </div>
+
+    <div class="tabs">
+      ${tabs.map(t => `
+        <div class="tab ${state.p2StartedTab === t.key ? 'active' : ''}" onclick="state.p2StartedTab='${t.key}'; renderMain()">
+          ${t.label}<span class="badge">${counts[t.key]}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <input class="search-input" placeholder="搜索员工/部门/方案">
+        <select class="filter-select"><option>全部部门</option>${MOCK.depts.map(d => `<option>${d}</option>`).join('')}</select>
+      </div>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" class="row-check"></th>
+          <th>人员</th>
+          <th>部门</th>
+          <th>职务</th>
+          <th>入职日期</th>
+          <th>直接经理</th>
+          <th>所属方案</th>
+          <th>融入状态</th>
+          <th style="width:160px">融入进度</th>
+          <th style="width:90px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.map(p => `
+          <tr>
+            <td><input type="checkbox" class="row-check"></td>
+            <td>${renderEmpCell(p.emp)}</td>
+            <td>${p.dept}</td>
+            <td>${p.position}</td>
+            <td>${p.joinDate}</td>
+            <td>${p.manager}</td>
+            <td>${p.planName}</td>
+            <td>${planStatusTag(p.status)}</td>
+            <td>${renderProgress(p.done, p.total, p.expired, p.cancelled)}</td>
+            <td><button class="btn-text" onclick="goto('plan-detail', { planId: '${p.id}' })">查看</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+function renderP2Unstarted() {
+  const rows = MOCK.unstartedEmps;
+  return `
+  <div class="breadcrumb">
+    <a>人事</a><span class="sep">/</span><a>新员工管理</a><span class="sep">/</span><span>新员工融入</span>
+  </div>
+  <div class="page-header">
+    <div>
+      <div class="page-title">新员工融入</div>
+      <div class="page-subtitle">未发起员工：已入职 + 在试用期 + 无进行中计划</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="subtabs">
+      <div class="subtab ${state.p2Sub === 'started' ? 'active' : ''}" onclick="state.p2Sub='started'; renderMain()">已发起员工</div>
+      <div class="subtab ${state.p2Sub === 'unstarted' ? 'active' : ''}" onclick="state.p2Sub='unstarted'; renderMain()">未发起员工<span style="background:#fee2e2;color:#991b1b;padding:1px 6px;border-radius:8px;font-size:11px;margin-left:6px">${rows.length}</span></div>
+    </div>
+
+    <div class="alert">⚠️ 以下员工未匹配任何融入方案，可手动发起或批量发起。</div>
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <input class="search-input" placeholder="搜索员工/部门">
+        <select class="filter-select"><option>全部部门</option>${MOCK.depts.map(d => `<option>${d}</option>`).join('')}</select>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn btn-primary" onclick="openBatchStartModal()">批量发起</button>
+      </div>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" class="row-check" id="unstartedCheckAll" onchange="toggleUnstartedAll(this)"></th>
+          <th>姓名</th>
+          <th>部门</th>
+          <th>职务</th>
+          <th>入职日期</th>
+          <th>直接经理</th>
+          <th style="width:120px">操作</th>
+        </tr>
+      </thead>
+      <tbody id="unstartedTbody">
+        ${rows.map(e => `
+          <tr data-eid="${e.id}">
+            <td><input type="checkbox" class="row-check unstarted-row"></td>
+            <td>${renderEmpCell(e.name)}</td>
+            <td>${e.dept}</td>
+            <td>${e.position}</td>
+            <td>${e.joinDate}</td>
+            <td>${e.manager}</td>
+            <td><button class="btn-text" onclick="openManualStartModal('${e.id}')">手动发起</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 批量/手动 发起方案 弹窗 -->
+  <div class="modal-mask" id="startModalMask">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="startModalTitle">发起融入方案</div>
+        <button class="modal-close" onclick="closeStartModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert info" id="startModalHint">将为选中的 <b>0</b> 名员工发起方案，未到「定时任务开始时间」的任务实例不会补发。</div>
+        <div class="form-group">
+          <label class="form-label">选择方案 <span class="req">*</span></label>
+          <select class="form-select" id="startPickPlan">
+            ${MOCK.plansSetting.map(p => `<option value="${p.id}">${p.name}（优先级 ${p.priority}）</option>`).join('')}
+          </select>
+          <div class="form-helper">仅会为员工生成本方案下「触发时机 ≥ 当前 - 入职日」的任务实例</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">备注</label>
+          <textarea class="form-textarea" placeholder="可填写发起说明（仅 HR 内部可见）"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeStartModal()">取消</button>
+        <button class="btn btn-primary" onclick="submitStartPlan()">确认发起</button>
+      </div>
+    </div>
+  </div>
+  `;
+}
+function toggleUnstartedAll(el) {
+  $$('.unstarted-row').forEach(c => c.checked = el.checked);
+}
+function openManualStartModal(eid) {
+  $('#startModalTitle').textContent = '手动发起融入方案';
+  $('#startModalHint').innerHTML = `将为员工 <b>${MOCK.unstartedEmps.find(e => e.id === eid).name}</b> 发起方案`;
+  $('#startModalMask').dataset.eid = eid;
+  $('#startModalMask').classList.add('show');
+}
+function openBatchStartModal() {
+  const checked = $$('.unstarted-row').filter(c => c.checked);
+  if (checked.length === 0) { toast('请先勾选员工'); return; }
+  $('#startModalTitle').textContent = '批量发起融入方案';
+  $('#startModalHint').innerHTML = `将为选中的 <b>${checked.length}</b> 名员工发起方案，未到「定时任务开始时间」的任务实例不会补发`;
+  $('#startModalMask').classList.add('show');
+}
+function closeStartModal() { $('#startModalMask').classList.remove('show'); }
+function submitStartPlan() {
+  closeStartModal();
+  toast('已发起，生成计划与任务实例（演示）');
+}
+function bindP2() {}
+
+// ====================== 计划详情 ======================
+function renderPlanDetail() {
+  const plan = MOCK.plans.find(p => p.id === state.selectedPlanId);
+  if (!plan) return `<div class="empty">未找到计划</div>`;
+  // 默认用 PL001 的详情数据兜底，便于演示
+  const detail = MOCK.planDetail[plan.id] || MOCK.planDetail['PL001'];
+  const stages = detail.stages;
+  // 统计
+  let total = 0, done = 0, expired = 0, cancelled = 0, progressCnt = 0;
+  stages.forEach(s => s.tasks.forEach(t => {
+    total++;
+    if (t.status === 'done') done++;
+    if (t.status === 'expire') expired++;
+    if (t.status === 'cancel') cancelled++;
+    if (t.status === 'progress' || t.status === 'todo') progressCnt++;
+  }));
+  const denom = total - cancelled;
+  const pct = denom === 0 ? 0 : Math.round(done / denom * 100);
+
+  return `
+  <div class="breadcrumb">
+    <a>人事</a><span class="sep">/</span><a>新员工管理</a><span class="sep">/</span>
+    <a onclick="goto('p1')">融入任务</a><span class="sep">/</span><span>${plan.emp} 的融入计划</span>
+  </div>
+  <div class="page-header">
+    <div>
+      <div class="page-title">${plan.emp} 的融入计划</div>
+      <div class="page-subtitle">所属方案：${plan.planName} · 计划编号 ${plan.id}</div>
+    </div>
+    <div>
+      ${plan.status === 'progress' ? `<button class="btn btn-danger" onclick="cancelWholePlan('${plan.id}')">取消整份计划</button>` : ''}
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <!-- 左：员工卡片 -->
+    <div class="employee-card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+        <span class="avatar" style="width:48px;height:48px;font-size:18px">${plan.emp.slice(0,1)}</span>
+        <div>
+          <div class="name">${plan.emp}</div>
+          <div class="meta">${plan.dept} · ${plan.position}</div>
+        </div>
+      </div>
+      <div class="kv-row"><span class="k">入职日期</span><span>${plan.joinDate}</span></div>
+      <div class="kv-row"><span class="k">直接经理</span><span>${plan.manager}</span></div>
+      <div class="kv-row"><span class="k">所属方案</span><span>${plan.planName}</span></div>
+      <div class="kv-row"><span class="k">计划状态</span><span>${planStatusTag(plan.status)}</span></div>
+
+      <div class="progress-block">
+        <div class="label">融入进度（已完成 / 未撤销）</div>
+        <div class="progress-row" style="margin-top:6px">
+          <div class="progress-bar" style="height:8px"><div class="progress-fill ${pct===100?'done':''}" style="width:${pct}%"></div></div>
+          <span class="progress-text" style="font-size:13px;color:var(--text)">${done}/${denom}</span>
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:12px">
+          <div><span class="dot done"></span>已完成 ${done}</div>
+          <div><span class="dot progress"></span>进行中 ${progressCnt}</div>
+          <div><span class="dot expire"></span>已过期 ${expired}</div>
+          <div><span class="dot cancel"></span>已撤销 ${cancelled}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右：阶段 + 任务列表 -->
+    <div>
+      ${stages.map((stg, idx) => renderStageBlock(stg, idx, plan)).join('')}
+    </div>
+  </div>
+
+  <!-- 撤销确认弹窗 -->
+  <div class="modal-mask" id="revokeMask">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">撤销任务实例</div>
+        <button class="modal-close" onclick="closeRevoke()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>确定撤销任务 <b id="revokeTaskName"></b>？</p>
+        <p style="margin-top:8px;color:var(--text-light);font-size:13px">撤销后该任务对办理人不可见；计划不会因此进入终态，融入进度将按未撤销基数重新计算。</p>
+        <div class="form-group" style="margin-top:14px">
+          <label class="form-label">撤销原因</label>
+          <textarea class="form-textarea" placeholder="选填"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeRevoke()">取消</button>
+        <button class="btn btn-danger" onclick="confirmRevoke()">确认撤销</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 取消整份计划弹窗 -->
+  <div class="modal-mask" id="cancelPlanMask">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">取消整份计划</div>
+        <button class="modal-close" onclick="closeCancelPlan()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>取消计划后：</p>
+        <ul style="margin:10px 0 10px 22px;color:var(--text-light);font-size:13px;line-height:1.8">
+          <li>未开始 / 进行中的任务实例将联动置为「已撤销」</li>
+          <li>已完成 / 已过期的实例保持不变</li>
+          <li>员工/办理人端不再看到该计划的任务</li>
+        </ul>
+        <div class="form-group" style="margin-top:14px">
+          <label class="form-label">取消原因</label>
+          <textarea class="form-textarea" placeholder="将记录到操作日志"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeCancelPlan()">返回</button>
+        <button class="btn btn-danger" onclick="confirmCancelPlan()">确认取消</button>
+      </div>
+    </div>
+  </div>
+  `;
+}
+function renderStageBlock(stg, idx, plan) {
+  const total = stg.tasks.length;
+  const doneNum = stg.tasks.filter(t => t.status === 'done').length;
+  const allDone = doneNum === total;
+  const hasProgress = stg.tasks.some(t => t.status === 'progress' || t.status === 'todo');
+  let stagePill = '';
+  if (allDone) stagePill = `<span class="stage-status-pill done">已完成</span>`;
+  else if (hasProgress) stagePill = `<span class="stage-status-pill in-progress">进行中</span>`;
+
+  return `
+  <div class="stage-block" data-stage="${idx}">
+    <div class="stage-head" onclick="toggleStage(${idx})">
+      <div class="stage-title">
+        <span style="color:var(--text-muted);font-size:12px">阶段 ${idx + 1}</span>
+        <span>${stg.name}</span>
+        ${stagePill}
+        <span class="stage-stat">${doneNum}/${total}</span>
+      </div>
+      <span class="caret">▼</span>
+    </div>
+    <div class="stage-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>任务名称</th>
+            <th style="width:170px">任务类型</th>
+            <th style="width:180px">办理人</th>
+            <th style="width:120px">开始日</th>
+            <th style="width:120px">截止日</th>
+            <th style="width:100px">状态</th>
+            <th style="width:110px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${stg.tasks.map(t => {
+            const st = STATUS_LABEL[t.status];
+            const canRevoke = (t.status === 'progress' || t.status === 'todo');
+            return `
+            <tr>
+              <td>${t.name}</td>
+              <td><span class="range-text">${t.type}</span></td>
+              <td>${t.handler}</td>
+              <td>${t.start}</td>
+              <td>${t.due}</td>
+              <td><span class="tag ${st.cls}"><span class="dot ${st.dot}"></span>${st.label}</span></td>
+              <td>${canRevoke ? `<button class="btn-text danger" onclick="openRevoke('${t.id}','${t.name.replace(/'/g,'')}')">撤销</button>` : '<span style="color:var(--text-muted)">—</span>'}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+function toggleStage(idx) {
+  $(`.stage-block[data-stage="${idx}"]`).classList.toggle('collapsed');
+}
+function openRevoke(tid, name) {
+  $('#revokeTaskName').textContent = name;
+  $('#revokeMask').classList.add('show');
+}
+function closeRevoke() { $('#revokeMask').classList.remove('show'); }
+function confirmRevoke() { closeRevoke(); toast('任务已撤销（演示）'); }
+function cancelWholePlan(pid) { $('#cancelPlanMask').classList.add('show'); }
+function closeCancelPlan() { $('#cancelPlanMask').classList.remove('show'); }
+function confirmCancelPlan() { closeCancelPlan(); toast('计划已取消，未结束实例已联动撤销（演示）'); }
+function bindPlanDetail() {}
+
+// ====================== 设置侧 · 任务类型 ======================
+function renderS1() {
+  const tab = state.s1Tab; // custom / builtin
+  const rows = MOCK.taskTypes[tab];
+  const mainName = tab === 'custom' ? '自定义任务' : '内置任务';
+
+  return `
+  <div class="breadcrumb">
+    <a>人事</a><span class="sep">/</span><a>人事设置</a><span class="sep">/</span>
+    <a>新员工融入设置</a><span class="sep">/</span><span>任务类型</span>
+  </div>
+  <div class="page-header">
+    <div>
+      <div class="page-title">任务类型</div>
+      <div class="page-subtitle">主任务类型由系统硬编码（自定义任务 / 内置任务），HR 仅管理其下的子任务类型</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab ${tab === 'custom' ? 'active' : ''}" onclick="state.s1Tab='custom'; renderMain()">自定义任务</div>
+      <div class="tab ${tab === 'builtin' ? 'active' : ''}" onclick="state.s1Tab='builtin'; renderMain()">内置任务</div>
+    </div>
+
+    ${tab === 'builtin' ? `
+      <div class="alert info">
+        🔒 系统内置三项子任务类型：<b>补充花名册信息</b> · <b>绩效任务</b> · <b>学习任务</b>。
+        系统内置项可停用、不可删除；HR 可在此基础上新增其他内置类的子任务类型。
+      </div>` : ''}
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <input class="search-input" placeholder="搜索子任务名称">
+      </div>
+      <div class="toolbar-right">
+        <button class="btn btn-primary" onclick="openSubTypeModal('${tab}')">+ 添加子任务类型</button>
+      </div>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>子任务名称</th>
+          <th>所属主任务</th>
+          <th>说明</th>
+          <th>引用计数</th>
+          <th style="width:100px">状态</th>
+          <th style="width:150px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(r => `
+          <tr>
+            <td>${r.name}${r.builtin ? '<span class="tag tag-required" style="margin-left:6px">硬编码</span>' : ''}</td>
+            <td>${mainName}</td>
+            <td><span class="range-text">${r.desc}</span></td>
+            <td>${r.count}</td>
+            <td>${r.enabled ? '<span class="tag tag-active">启用</span>' : '<span class="tag tag-inactive">停用</span>'}</td>
+            <td>
+              <span class="row-ops">
+                ${r.builtin
+                  ? `<span class="btn-text" style="color:var(--text-muted);cursor:not-allowed">编辑</span>`
+                  : `<button class="btn-text" onclick="openSubTypeModal('${tab}','${r.id}')">编辑</button>`}
+                <span class="sep">|</span>
+                ${r.enabled
+                  ? `<button class="btn-text" onclick="toggleSubType('${r.id}')">停用</button>`
+                  : `<button class="btn-text" onclick="toggleSubType('${r.id}')">启用</button>`}
+                ${!r.builtin ? `<span class="sep">|</span><button class="btn-text danger" onclick="deleteSubType('${r.id}')">删除</button>` : ''}
+              </span>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 添加子任务弹窗 -->
+  <div class="modal-mask" id="subTypeMask">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="subTypeTitle">添加子任务</div>
+        <button class="modal-close" onclick="closeSubType()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">所属主任务</label>
+          <input class="form-input" id="subTypeMain" value="${mainName}" disabled>
+          <div class="form-helper">由当前 Tab 自动带出，不可修改</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">子任务名称 <span class="req">*</span></label>
+          <input class="form-input" id="subTypeName" placeholder="如：试用期管理">
+        </div>
+        <div class="form-group">
+          <label class="form-label">子任务描述</label>
+          <textarea class="form-textarea" id="subTypeDesc" placeholder="对该子任务类型的用途说明"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeSubType()">取消</button>
+        <button class="btn btn-primary" onclick="saveSubType()">保存</button>
+      </div>
+    </div>
+  </div>
+  `;
+}
+function openSubTypeModal(tab, id) {
+  $('#subTypeTitle').textContent = id ? '编辑子任务' : '添加子任务';
+  $('#subTypeName').value = '';
+  $('#subTypeDesc').value = '';
+  if (id) {
+    const r = MOCK.taskTypes[tab].find(x => x.id === id);
+    $('#subTypeName').value = r.name;
+    $('#subTypeDesc').value = r.desc;
+  }
+  $('#subTypeMask').classList.add('show');
+}
+function closeSubType() { $('#subTypeMask').classList.remove('show'); }
+function saveSubType() {
+  if (!$('#subTypeName').value.trim()) { toast('请填写子任务名称'); return; }
+  closeSubType();
+  toast('已保存（演示）');
+}
+function toggleSubType(id) {
+  ['custom', 'builtin'].forEach(k => {
+    const r = MOCK.taskTypes[k].find(x => x.id === id);
+    if (r) r.enabled = !r.enabled;
+  });
+  renderMain();
+}
+function deleteSubType(id) {
+  if (!confirm('确认删除该子任务类型？已被引用将无法删除。')) return;
+  toast('已删除（演示）');
+}
+function bindS1() {}
+
+// ====================== 设置侧 · 任务方案 列表 ======================
+function renderS2() {
+  return `
+  <div class="breadcrumb">
+    <a>人事</a><span class="sep">/</span><a>人事设置</a><span class="sep">/</span>
+    <a>新员工融入设置</a><span class="sep">/</span><span>任务方案</span>
+  </div>
+  <div class="page-header">
+    <div>
+      <div class="page-title">任务方案</div>
+      <div class="page-subtitle">一组任务的有序组合，可配置阶段、适用范围、优先级。员工命中多个方案时取优先级最高的一份</div>
+    </div>
+    <button class="btn btn-primary" onclick="openNewPlanModal()">+ 新建任务方案</button>
+  </div>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <input class="search-input" placeholder="搜索方案名称">
+      </div>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>方案名称</th>
+          <th>方案说明</th>
+          <th>适用范围</th>
+          <th style="width:90px">优先级</th>
+          <th style="width:110px">阶段数</th>
+          <th style="width:110px">任务数</th>
+          <th style="width:180px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${MOCK.plansSetting.map(p => {
+          const taskCount = p.stages.reduce((s, stg) => s + stg.templates.length, 0);
+          return `
+          <tr>
+            <td><span class="table-name" onclick="enterPlanEdit('${p.id}')">${p.name}</span></td>
+            <td><span class="range-text">${p.desc || '—'}</span></td>
+            <td>${p.range.map(r => `<span class="chip">${r}</span>`).join(' ')}</td>
+            <td><span class="tag tag-priority">${p.priority}</span></td>
+            <td>${p.stages.length}</td>
+            <td>${taskCount}</td>
+            <td>
+              <span class="row-ops">
+                <button class="btn-text" onclick="enterPlanEdit('${p.id}')">编辑</button>
+                <span class="sep">|</span>
+                <button class="btn-text" onclick="toast('已复制方案（演示）')">复制</button>
+                <span class="sep">|</span>
+                <button class="btn-text danger" onclick="if(confirm('删除该方案？已发起的计划不受影响')) toast('已删除（演示）')">删除</button>
+              </span>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 新建任务方案 弹窗 -->
+  <div class="modal-mask" id="newPlanMask">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">新建任务方案</div>
+        <button class="modal-close" onclick="closeNewPlanModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">方案名称 <span class="req">*</span></label>
+          <input class="form-input" id="np-name" placeholder="如：研发岗融入方案">
+        </div>
+        <div class="form-group">
+          <label class="form-label">方案说明</label>
+          <textarea class="form-textarea" id="np-desc" placeholder="方案适用对象/目的"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">优先级 <span class="req">*</span></label>
+            <input class="form-input" id="np-priority" type="number" value="50">
+            <div class="form-helper">数值越大优先级越高</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">适用范围 <span class="req">*</span></label>
+            <div class="chip-list" id="np-range">
+              <span class="chip">研发部 <span class="x" onclick="this.parentNode.remove()">✕</span></span>
+              <span class="chip">正式员工 <span class="x" onclick="this.parentNode.remove()">✕</span></span>
+              <input class="chip-input" placeholder="点击选择…" onclick="openRangePicker()">
+            </div>
+            <div class="form-helper">支持按 部门 / 雇佣类型 选择</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeNewPlanModal()">取消</button>
+        <button class="btn btn-primary" onclick="goAddTemplates()">去添加任务模板 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 适用范围 picker -->
+  <div class="modal-mask" id="rangePickerMask">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">选择适用范围</div>
+        <button class="modal-close" onclick="closeRangePicker()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-section-title">部门</div>
+        <div class="tree">
+          ${MOCK.depts.map(d => `<div class="tree-node"><label><input type="checkbox"> ${d}</label></div>`).join('')}
+        </div>
+        <div class="form-section-title">雇佣类型</div>
+        <div class="tree">
+          ${MOCK.employTypes.map(t => `<div class="tree-node"><label><input type="checkbox"> ${t}</label></div>`).join('')}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeRangePicker()">取消</button>
+        <button class="btn btn-primary" onclick="closeRangePicker(); toast('已选定（演示）')">确认</button>
+      </div>
+    </div>
+  </div>
+  `;
+}
+function openNewPlanModal() { $('#newPlanMask').classList.add('show'); }
+function closeNewPlanModal() { $('#newPlanMask').classList.remove('show'); }
+function openRangePicker() { $('#rangePickerMask').classList.add('show'); }
+function closeRangePicker() { $('#rangePickerMask').classList.remove('show'); }
+function goAddTemplates() {
+  closeNewPlanModal();
+  // 把新建的方案拼到一个临时 id，并把 state.editingPlan 指向它，进入编辑详情
+  state.editingPlan = 'SC01'; // 演示直接进入第一个方案
+  goto('s2-edit');
+}
+function enterPlanEdit(pid) {
+  state.editingPlan = pid;
+  state.selectedPlanStage = 0;
+  goto('s2-edit');
+}
+function bindS2() {}
+
+// ====================== 任务方案 · 编辑详情 ======================
+function renderS2Edit() {
+  const plan = MOCK.plansSetting.find(p => p.id === state.editingPlan) || MOCK.plansSetting[0];
+  const stageIdx = state.selectedPlanStage;
+  const stage = plan.stages[stageIdx] || { name: '', templates: [] };
+
+  return `
+  <div class="breadcrumb">
+    <a>人事</a><span class="sep">/</span><a>人事设置</a><span class="sep">/</span>
+    <a>新员工融入设置</a><span class="sep">/</span>
+    <a onclick="goto('s2')">任务方案</a><span class="sep">/</span><span>${plan.name}</span>
+  </div>
+  <div class="page-header">
+    <div>
+      <div class="page-title">${plan.name}</div>
+      <div class="page-subtitle">编辑阶段与任务模板</div>
+    </div>
+    <div>
+      <button class="btn" onclick="goto('s2')">返回列表</button>
+      <button class="btn btn-primary" onclick="toast('方案已保存（演示）')">保存方案</button>
+    </div>
+  </div>
+
+  <!-- 方案基础信息折叠卡 -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-weight:600">基础信息</div>
+      <button class="btn-text" onclick="this.parentNode.nextElementSibling.style.display = this.parentNode.nextElementSibling.style.display==='none'?'grid':'none'">展开 / 折叠</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+      <div><div class="form-label">方案名称</div><input class="form-input" value="${plan.name}"></div>
+      <div><div class="form-label">优先级</div><input class="form-input" value="${plan.priority}" type="number"></div>
+      <div style="grid-column:span 2"><div class="form-label">适用范围</div>
+        <div class="chip-list">
+          ${plan.range.map(r => `<span class="chip">${r} <span class="x">✕</span></span>`).join(' ')}
+          <input class="chip-input" placeholder="点击选择…" onclick="openRangePicker()">
+        </div>
+      </div>
+      <div style="grid-column:span 4"><div class="form-label">方案说明</div><textarea class="form-textarea">${plan.desc || ''}</textarea></div>
+    </div>
+  </div>
+
+  <div class="plan-edit-grid">
+    <!-- 左：阶段列表 -->
+    <div class="stage-list-panel">
+      <div class="panel-head">
+        <div class="title">阶段</div>
+        <button class="btn-text" onclick="openNewStageModal()">+ 新建阶段</button>
+      </div>
+      <div id="stageList">
+        ${plan.stages.map((s, i) => `
+          <div class="stage-item ${i === stageIdx ? 'active' : ''}" onclick="state.selectedPlanStage=${i}; renderMain()">
+            <span><span style="color:inherit">${s.name}</span><span class="num">· ${s.templates.length} 项</span></span>
+            <span class="actions">
+              <button class="btn-text" onclick="event.stopPropagation(); openStageRename(${i})">改名</button>
+              <button class="btn-text danger" onclick="event.stopPropagation(); if(confirm('确认删除该阶段?')) toast('已删除阶段（演示）')">删</button>
+            </span>
+          </div>`).join('')}
+        ${plan.stages.length === 0 ? `<div class="empty" style="padding:20px 0">还没有阶段，点击右上「+ 新建阶段」</div>` : ''}
+      </div>
+    </div>
+
+    <!-- 右：当前阶段下任务模板 -->
+    <div class="template-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div style="font-weight:600;font-size:15px">${stage.name || '请先选择 / 新建阶段'}</div>
+          <div class="form-helper">阶段下任务模板（${stage.templates.length} 项），任务按列表顺序执行</div>
+        </div>
+        <div>
+          <button class="btn btn-primary" onclick="openAddTemplateModal()">+ 添加任务模板</button>
+        </div>
+      </div>
+
+      ${stage.templates.length === 0 ? `<div class="empty" style="padding:30px 0">📭 当前阶段下还没有任务模板</div>` :
+        stage.templates.map((t, ti) => renderTemplateCard(t, ti)).join('')}
+    </div>
+  </div>
+
+  <!-- 新建阶段弹窗 -->
+  <div class="modal-mask" id="newStageMask">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">新建阶段</div>
+        <button class="modal-close" onclick="closeNewStageModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">阶段名称 <span class="req">*</span></label>
+          <input class="form-input" id="stageName" placeholder="如：入职第 1 周">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeNewStageModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveStage()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  ${renderAddTemplateModal()}
+  `;
+}
+function renderTemplateCard(t, ti) {
+  const f = MOCK.taskForms.find(x => x.id === t.formId) || { name: '—', subTypeName: '—' };
+  return `
+  <div class="template-card">
+    <div class="template-card-head">
+      <div>
+        <span class="t-name">${f.name}</span>
+        <span class="tag ${f.external ? 'tag-required' : 'tag-optional'}" style="margin-left:8px">${f.external ? '内置 · ' + f.subTypeName : '自定义 · ' + f.subTypeName}</span>
+      </div>
+      <div class="row-ops">
+        <button class="btn-text" onclick="openAddTemplateModal('${t.id}')">编辑</button>
+        <span class="sep">|</span>
+        <button class="btn-text" onclick="toast('已上移（演示）')">↑</button>
+        <button class="btn-text" onclick="toast('已下移（演示）')">↓</button>
+        <span class="sep">|</span>
+        <button class="btn-text danger" onclick="if(confirm('删除该任务模板?')) toast('已删除（演示）')">删除</button>
+      </div>
+    </div>
+    <div class="template-card-meta">
+      <div>执行人：<b>${t.exec}</b></div>
+      <div>${t.auto ? '自动触发' : '手动触发'}：<b>入职后第 ${t.triggerDay} 天</b></div>
+      <div>${t.hasDue ? `截止时机：<b>入职后第 ${t.dueDay} 天</b>` : '截止：<b>不启用</b>'}</div>
+      <div>定时任务开始：<b>${t.startTime}</b></div>
+      <div>下发提醒：<b>${t.remindPub}</b></div>
+      <div>截止提醒：<b>${t.remindDue}</b></div>
+    </div>
+  </div>`;
+}
+function openNewStageModal() { $('#stageName').value = ''; $('#newStageMask').classList.add('show'); }
+function closeNewStageModal() { $('#newStageMask').classList.remove('show'); }
+function saveStage() {
+  const v = $('#stageName').value.trim();
+  if (!v) { toast('请填写阶段名称'); return; }
+  const plan = MOCK.plansSetting.find(p => p.id === state.editingPlan);
+  plan.stages.push({ name: v, templates: [] });
+  state.selectedPlanStage = plan.stages.length - 1;
+  closeNewStageModal();
+  renderMain();
+  toast('阶段已新建');
+}
+function openStageRename(idx) {
+  const plan = MOCK.plansSetting.find(p => p.id === state.editingPlan);
+  const newName = prompt('阶段名称', plan.stages[idx].name);
+  if (newName) { plan.stages[idx].name = newName; renderMain(); toast('已改名'); }
+}
+function bindS2Edit() {
+  // 弹窗内是否自动触发 / 是否启用截止 联动初始化
+  const auto = document.getElementById('tpl-auto');
+  if (auto) toggleAutoBlock(auto.checked);
+  const due = document.getElementById('tpl-hasDue');
+  if (due) toggleDueBlock(due.checked);
+  refreshFormPreview();
+}
+
+// ====================== 办理人 / 员工 任务列表 ======================
+function renderHandlerList() {
+  return renderTaskListForRole('handler');
+}
+function renderEmployeeList() {
+  return renderTaskListForRole('employee');
+}
+function renderTaskListForRole(role) {
+  const all = MOCK.taskListByRole();
+  // 角色筛选：handler 看 "直接经理"；employee 看 "本人"
+  const filterByRole = (t) => role === 'handler'
+    ? t.handler.includes('直接经理')
+    : t.handler.includes('本人');
+  const mine = all.filter(filterByRole);
+
+  // Tab → status 映射
+  const mapTabToStatus = { todo: ['progress', 'todo'], done: ['done'], cancel: ['cancel'], expire: ['expire'] };
+  const tabKey = state.handlerTab;
+  const cur = mine.filter(t => mapTabToStatus[tabKey].includes(t.status));
+
+  const counts = { todo: 0, done: 0, cancel: 0, expire: 0 };
+  mine.forEach(t => {
+    if (t.status === 'progress' || t.status === 'todo') counts.todo++;
+    else if (t.status === 'done') counts.done++;
+    else if (t.status === 'cancel') counts.cancel++;
+    else if (t.status === 'expire') counts.expire++;
+  });
+
+  const tabs = [
+    { k: 'todo', label: '待处理' },
+    { k: 'done', label: '已处理' },
+    { k: 'cancel', label: '已取消' },
+    { k: 'expire', label: '已过期' },
+  ];
+
+  const pageTitle = role === 'handler' ? '我负责的任务' : '我的融入任务';
+  const subtitle = role === 'handler'
+    ? '顶层筛选条件：办理人 = 当前用户'
+    : '入职后系统派发给我的任务清单';
+
+  return `
+  <div class="breadcrumb">
+    <a>${role === 'handler' ? '工作台' : '我的入职'}</a><span class="sep">/</span><span>${pageTitle}</span>
+  </div>
+  <div class="page-header">
+    <div>
+      <div class="page-title">${pageTitle}</div>
+      <div class="page-subtitle">${subtitle}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      ${tabs.map(t => `
+        <div class="tab ${tabKey === t.k ? 'active' : ''}" onclick="state.handlerTab='${t.k}'; renderMain()">
+          ${t.label}<span class="badge">${counts[t.k]}</span>
+        </div>`).join('')}
+    </div>
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <input class="search-input" placeholder="搜索任务名称">
+        <select class="filter-select">
+          <option>全部类型</option>
+          <option>内置任务</option>
+          <option>自定义任务</option>
+        </select>
+      </div>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>任务名称</th>
+          <th style="width:170px">任务类型</th>
+          ${role === 'handler' ? '<th style="width:130px">关联员工</th>' : ''}
+          <th style="width:130px">所属阶段</th>
+          <th style="width:110px">开始日</th>
+          <th style="width:110px">截止日</th>
+          <th style="width:100px">状态</th>
+          <th style="width:110px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${cur.length === 0 ? `<tr><td colspan="${role==='handler'?8:7}"><div class="empty">📭 暂无任务</div></td></tr>` :
+          cur.map(t => {
+            const st = STATUS_LABEL[t.status];
+            const canDo = (t.status === 'progress' || t.status === 'todo' || t.status === 'expire');
+            return `
+            <tr>
+              <td><span class="table-name" onclick="openHandleTask('${t.id}','${t.name.replace(/'/g,'')}','${t.type}','${t.planEmp}')">${t.name}</span></td>
+              <td><span class="range-text">${t.type}</span></td>
+              ${role === 'handler' ? `<td>${renderEmpCell(t.planEmp)}</td>` : ''}
+              <td>${t.stageName}</td>
+              <td>${t.start}</td>
+              <td>${t.due}</td>
+              <td><span class="tag ${st.cls}"><span class="dot ${st.dot}"></span>${st.label}</span></td>
+              <td>
+                ${canDo
+                  ? `<button class="btn-text" onclick="openHandleTask('${t.id}','${t.name.replace(/'/g,'')}','${t.type}','${t.planEmp}')">办理</button>`
+                  : '<span style="color:var(--text-muted)">—</span>'}
+              </td>
+            </tr>`;
+          }).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 办理任务 弹窗 -->
+  <div class="modal-mask" id="handleMask">
+    <div class="modal lg">
+      <div class="modal-header">
+        <div class="modal-title" id="handleTitle">办理任务</div>
+        <button class="modal-close" onclick="closeHandleTask()">✕</button>
+      </div>
+      <div class="modal-body" id="handleBody"></div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeHandleTask()">取消</button>
+        <button class="btn btn-primary" id="handleSubmitBtn" onclick="submitHandleTask()">提交并完成</button>
+      </div>
+    </div>
+  </div>
+  `;
+}
+function openHandleTask(id, name, type, emp) {
+  $('#handleTitle').textContent = '办理：' + name;
+  const isBuiltin = type.indexOf('内置') !== -1;
+  const body = $('#handleBody');
+  if (isBuiltin) {
+    body.innerHTML = `
+      <div class="builtin-jump">
+        <div class="icon">🔗</div>
+        <div style="font-size:14px;margin-bottom:6px">这是内置任务：<b>${type}</b></div>
+        <div style="color:var(--text-light);font-size:13px;margin-bottom:14px">请前往对应业务模块完成办理。完成后系统将自动回写完成状态。</div>
+        <button class="btn btn-primary" onclick="toast('跳转到业务模块（演示）'); closeHandleTask()">前往业务模块办理</button>
+      </div>
+      <div class="alert info" style="margin-top:16px">
+        关联员工：<b>${emp}</b> · 任务编号：${id}
+      </div>
+    `;
+    $('#handleSubmitBtn').style.display = 'none';
+  } else {
+    // 自定义任务：示例渲染一个表单
+    body.innerHTML = `
+      <div class="handler-form">
+        <div class="alert info">关联员工：<b>${emp}</b> · 任务编号：${id}</div>
+        <div class="field">
+          <label>面谈时间 <span class="req" style="color:var(--danger)">*</span></label>
+          <input type="date" value="2026-05-22">
+        </div>
+        <div class="field">
+          <label>面谈纪要 <span class="req" style="color:var(--danger)">*</span></label>
+          <textarea placeholder="简述本次 1v1 内容..."></textarea>
+        </div>
+        <div class="field">
+          <label>附件</label>
+          <div class="upload-area" onclick="toast('选择文件（演示）')">📎 点击上传或拖拽文件至此</div>
+          <div class="upload-list">
+            <div class="file"><span>1v1 纪要.pdf · 124KB</span><span style="color:var(--danger);cursor:pointer">删除</span></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>整体评价</label>
+          <select>
+            <option>优秀</option><option>良好</option><option>合格</option><option>有待改进</option>
+          </select>
+        </div>
+      </div>
+    `;
+    $('#handleSubmitBtn').style.display = '';
+  }
+  $('#handleMask').classList.add('show');
+}
+function closeHandleTask() { $('#handleMask').classList.remove('show'); }
+function submitHandleTask() { closeHandleTask(); toast('已提交，任务置为已完成（演示）'); }
+function bindHandlerList() {}
+
+// ====================== 添加任务模板 弹窗 ======================
+function renderAddTemplateModal() {
+  // 默认：选中第一个 子任务类型（按当前 tab 联动），暂时取自定义第一项
+  const allSubs = [
+    ...MOCK.taskTypes.builtin.map(x => ({ ...x, kind: 'builtin' })),
+    ...MOCK.taskTypes.custom.map(x => ({ ...x, kind: 'custom' })),
+  ];
+  return `
+  <div class="modal-mask" id="addTplMask">
+    <div class="modal xl">
+      <div class="modal-header">
+        <div class="modal-title" id="addTplTitle">添加任务模板</div>
+        <button class="modal-close" onclick="closeAddTemplateModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <!-- 左侧：基础信息 + 任务表单字段 -->
+          <div>
+            <div class="form-section-title">基础信息</div>
+            <div class="form-group">
+              <label class="form-label">任务类型 <span class="req">*</span></label>
+              <select class="form-select" id="tpl-subType" onchange="onSubTypeChange()">
+                <optgroup label="内置任务">
+                  ${MOCK.taskTypes.builtin.map(x => `<option value="b:${x.id}">${x.name}</option>`).join('')}
+                </optgroup>
+                <optgroup label="自定义任务">
+                  ${MOCK.taskTypes.custom.map(x => `<option value="c:${x.id}">${x.name}</option>`).join('')}
+                </optgroup>
+              </select>
+              <div class="form-helper">先选任务类型，再关联表单（表单按类型筛选）</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">关联任务表单 <span class="req">*</span></label>
+              <select class="form-select" id="tpl-form" onchange="refreshFormPreview()">
+                <!-- 由 onSubTypeChange 动态填充 -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">任务执行人 <span class="req">*</span></label>
+              <select class="form-select" id="tpl-exec">
+                <option>员工本人</option>
+                <option>直接经理</option>
+                <option>HRBP</option>
+                <option>系统管理员</option>
+                <option>指定人员</option>
+              </select>
+            </div>
+
+            <div class="form-section-title">任务表单字段（预览）</div>
+            <div class="field-preview-list" id="fieldPreview"></div>
+            <button class="btn btn-sm" style="margin-top:8px" onclick="toast('跳转到任务表单设计器（暂不实现）')">
+              📝 去表单中填写信息
+            </button>
+          </div>
+
+          <!-- 右侧：触发时机 + 提醒规则 -->
+          <div>
+            <div class="form-section-title">触发时机</div>
+
+            <div class="trigger-block">
+              <div class="trigger-block-head">
+                <span class="trigger-title">是否自动触发</span>
+                <label class="switch"><input type="checkbox" id="tpl-auto" checked onchange="toggleAutoBlock(this.checked)"><span class="switch-slider"></span></label>
+              </div>
+              <div class="trigger-row" id="autoBlock">
+                <span>触发时机：入职后第</span>
+                <input class="inline-input" type="number" value="0" min="0">
+                <span>天</span>
+              </div>
+              <div class="form-helper" style="margin-top:6px">关闭后，需在「未发起员工」手动发起</div>
+            </div>
+
+            <div class="trigger-block">
+              <div class="trigger-block-head">
+                <span class="trigger-title">是否有截止日期</span>
+                <label class="switch"><input type="checkbox" id="tpl-hasDue" checked onchange="toggleDueBlock(this.checked)"><span class="switch-slider"></span></label>
+              </div>
+              <div class="trigger-row" id="dueBlock">
+                <span>截止时机：入职后第</span>
+                <input class="inline-input" type="number" value="7" min="0">
+                <span>天</span>
+              </div>
+              <div class="form-helper" style="margin-top:6px">到达截止日仍未完成将置为「已过期」</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">定时任务开始时间</label>
+              <input class="form-input" type="date" id="tpl-startTime" value="2026-06-01">
+              <div class="form-helper">早于该日期"应触发"的任务实例不会为员工补发</div>
+            </div>
+
+            <div class="form-section-title">钉钉提醒规则</div>
+            <div class="remind-row">
+              <span class="lbl">下发计划提醒</span>
+              <select class="form-select" id="tpl-remindPub">
+                <option value="">不提醒</option>
+                ${MOCK.remindRules.flatMap(g => g.subs.map(s => `<option>${g.main} / ${s}</option>`)).join('')}
+              </select>
+            </div>
+            <div class="remind-row">
+              <span class="lbl">任务截止提醒</span>
+              <select class="form-select" id="tpl-remindDue">
+                <option value="">不提醒</option>
+                ${MOCK.remindRules.flatMap(g => g.subs.map(s => `<option>${g.main} / ${s}</option>`)).join('')}
+              </select>
+            </div>
+            <div class="form-helper">级联：主任务 / 子任务，引用「钉钉提醒」已有规则</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeAddTemplateModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveTemplate()">完成</button>
+      </div>
+    </div>
+  </div>
+  `;
+}
+function openAddTemplateModal(tplId) {
+  $('#addTplTitle').textContent = tplId ? '编辑任务模板' : '添加任务模板';
+  $('#addTplMask').classList.add('show');
+  // 默认联动初始化（先选第一个 内置类型）
+  onSubTypeChange();
+}
+function closeAddTemplateModal() { $('#addTplMask').classList.remove('show'); }
+function onSubTypeChange() {
+  const v = $('#tpl-subType').value || '';
+  const [kind, id] = v.split(':');
+  // 联动出可选表单
+  const forms = MOCK.taskForms.filter(f => f.subTypeId === id);
+  const sel = $('#tpl-form');
+  if (forms.length === 0) {
+    sel.innerHTML = `<option value="">（该类型下暂无表单）</option>`;
+  } else {
+    sel.innerHTML = forms.map(f => `<option value="${f.id}">${f.name}${f.external ? '（内置表单）' : ''}</option>`).join('');
+  }
+  refreshFormPreview();
+}
+function refreshFormPreview() {
+  const fid = $('#tpl-form').value;
+  const f = MOCK.taskForms.find(x => x.id === fid);
+  const box = $('#fieldPreview');
+  if (!f) { box.innerHTML = `<div class="empty" style="padding:14px 0;">请选择任务表单</div>`; return; }
+  box.innerHTML = f.fields.map(fd => `
+    <div class="field-preview-item ${fd.locked ? 'locked' : ''}">
+      <span class="fname">${fd.name}</span>
+      <span class="ftype">${fd.type}${fd.locked ? ' · 只读' : ''}${fd.note ? '（' + fd.note + '）' : ''}</span>
+    </div>
+  `).join('') + (f.external ? `<div class="form-helper" style="margin-top:6px">该表单为内置业务模块维护，HR 不可修改字段</div>` : '');
+}
+function toggleAutoBlock(on) {
+  const blk = $('#autoBlock');
+  if (!blk) return;
+  blk.classList.toggle('trigger-disabled', !on);
+}
+function toggleDueBlock(on) {
+  const blk = $('#dueBlock');
+  if (!blk) return;
+  blk.classList.toggle('trigger-disabled', !on);
+}
+function saveTemplate() {
+  const sub = $('#tpl-subType').value;
+  const form = $('#tpl-form').value;
+  if (!sub || !form) { toast('请完整选择任务类型与表单'); return; }
+  closeAddTemplateModal();
+  toast('任务模板已保存（演示）');
+  // 演示：往当前阶段塞一条
+  const plan = MOCK.plansSetting.find(p => p.id === state.editingPlan);
+  if (plan && plan.stages[state.selectedPlanStage]) {
+    plan.stages[state.selectedPlanStage].templates.push({
+      id: 'NEW' + Date.now(), formId: form, exec: $('#tpl-exec').value,
+      auto: $('#tpl-auto').checked, triggerDay: 0,
+      hasDue: $('#tpl-hasDue').checked, dueDay: 7,
+      startTime: $('#tpl-startTime').value,
+      remindPub: $('#tpl-remindPub').value || '不提醒',
+      remindDue: $('#tpl-remindDue').value || '不提醒',
+    });
+    renderMain();
+  }
+}
+</script>
+
+</body>
+</html>
